@@ -51,9 +51,11 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
   these limits preserve the original.
 - Read only the rendered Monaco lines. If the signature is not in those lines,
   preserve original examples. Full editor-model integration is deliberately deferred.
-- Only support the observed `pre > strong Input:` + text + `strong Output:` shape.
-  Markup changes fail closed. Future adapters can support other layouts explicitly.
-- Move the original Text node into an extension-owned hidden wrapper, preserving
+- Support observed legacy `pre > strong Input:` + text + `strong Output:` and
+  modern `.example-block` paragraphs with a plain `span.example-io` and separate
+  Output paragraph. Unknown markup/prose fails closed. The modern view preserves
+  original typography and multi-line declarations.
+- Move the original input node (Text or example-io span) into an extension-owned hidden wrapper, preserving
   its content and identity. Render validated declarations with `textContent`.
   Original mode shows the actual original node; cleanup unwraps it.
 - Double-click copies only that variable's complete formatted declaration. Enter
@@ -97,3 +99,6 @@ It requires g++ on PATH and creates/removes its own verified temporary directory
 Next adapters/formatters must preserve these boundaries. TreeNode/ListNode
 builders, Python and JavaScript remain separate future work. The root
 `LeetCase.md` holds the user requirements, current verification and backlog.
+
+Browser layout regressions: `/tests/dom-regressions.html` covers both observed
+layouts, two arrays and exact original/Output/Explanation restoration.

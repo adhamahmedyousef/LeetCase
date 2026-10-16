@@ -20,6 +20,19 @@
       if (next?.nodeType !== Node.ELEMENT_NODE || next.tagName !== "STRONG" || next.textContent.trim() !== "Output:") continue;
       nodes.push(value);
     }
+    // Newer descriptions put each field in a separate paragraph.
+    for (const label of document.querySelectorAll(`${descriptionSelector} .example-block > p > strong`)) {
+      if (label.textContent.trim() !== "Input:") continue;
+      const row = label.parentElement;
+      const value = label.nextElementSibling;
+      const output = row.nextElementSibling;
+      if (!value?.matches("span.example-io") || value.children.length || !value.textContent.trim()) continue;
+      if (row.children.length !== 2 || row.firstElementChild !== label) continue;
+      // All other row text must be whitespace; never consume unrelated prose.
+      if ([...row.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim())) continue;
+      if (output?.tagName !== "P" || output.firstElementChild?.tagName !== "STRONG" || output.firstElementChild.textContent.trim() !== "Output:") continue;
+      nodes.push(value);
+    }
     return nodes;
   }
   function editorColors(parameterNames = []) {

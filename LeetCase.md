@@ -23,11 +23,11 @@ the user's next stage. Do not build the entire roadmap in one pass.
 GitHub push was explicitly authorized in this conversation; do not create another
 repository, publish a store listing or deploy unrelated services without a request.
 
-The current request expands C++ input types and records this file. The user says
+The current request fixes Integer to Roman and verifies two-array inputs. The user says
 the existing extension works well. **Popup/exterior redesign is the next stage;
 do not redesign it during the type expansion.** Python and JavaScript come later.
 
-## Current behavior (source version 0.3.0)
+## Current behavior (source version 0.3.1)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -92,7 +92,7 @@ Unsupported input rejects the whole example instead of producing a partial conve
 | `dist/` | Ignored local ZIPs/screenshots, not tracked source |
 
 Do not inject into React/Monaco private state or overwrite original input text.
-The original Text node is retained in a hidden wrapper, revealed by Original and
+The original input node (Text or example-io span) is retained in a hidden wrapper, revealed by Original and
 unwrapped on cleanup. Use `textContent` for rendering, never raw input as HTML.
 
 ## Verification and current evidence
@@ -125,8 +125,8 @@ shim is test-only and is not part of the shipped extension.
 1. **Next requested stage:** polish the extension popup/exterior, after the user
    reviews this type expansion. Keep the in-page interaction agreed above.
 2. Verify 0.3.0 on several real LeetCode problems after extension Reload + page Refresh.
-   Current adapter accepts only the observed `pre > strong Input:` + text +
-   `strong Output:` example layout. Add other layouts only after observing them.
+   The adapter supports legacy `pre` examples and modern `.example-block` paragraphs
+   containing a plain `span.example-io`. Add other layouts only after observing them.
 3. **TreeNode and ListNode remain unsupported.** Design explicit builders with
    LeetCode's serialization rules; never reinterpret their input arrays as vectors.
 4. Python then JavaScript formatters and language-specific function signatures.
@@ -149,3 +149,33 @@ shim is test-only and is not part of the shipped extension.
 Updates are manual. Existing Chrome installs need **Reload** on the extension
 card, then **Refresh** on the problem page. Browser automation cannot claim
 `chrome://extensions` in this setup, so the user performs that reload step.
+
+## 0.3.1: Integer to Roman and two-array follow-up
+
+- User reported Integer to Roman showing no conversion:
+  https://leetcode.com/problems/integer-to-roman/.
+- Inspected the actual authenticated Chrome page. Language was C++, with visible
+  `string intToRoman(int num)`. Its Input is inside
+  `.example-block > p > strong` followed by `span.example-io`; Output is in a
+  separate paragraph. The previous adapter only supported `pre` examples.
+- Added strict detection of that observed paragraph layout. The renderer preserves
+  the exact original span and its typography, allows multiple declaration lines,
+  and leaves Output/Explanation nodes intact. Unknown nested markup or surrounding
+  prose still fails closed. Original cleanup restores the original element identity.
+- Verified the real Median of Two Sorted Arrays page:
+  https://leetcode.com/problems/median-of-two-sorted-arrays/.
+  It initially opened in Python3; selecting C++ produced both nums1 and nums2
+  declarations for both examples using the already-supported legacy layout.
+  Python is still intentionally unsupported; never imply arrays convert in Python.
+- Parameter binding now matches by name rather than relying on example order.
+  Reversed arrays are supported; unknown/duplicate parameter names are rejected.
+- Latest verification: 18 Node tests passed; 18 browser DOM layout checks passed;
+  native C++ verification still passed (168 declarations / 404 value assertions).
+  DOM checks cover both layouts, two arrays, an empty array, duplicate detection,
+  original node identity, typography, line breaks and unchanged Output/Explanation.
+- Browser DOM suite: serve the project and open `/tests/dom-regressions.html`.
+  This uses observed markup locally; it is not a claim that the updated adapter
+  has already run on the real Integer to Roman page.
+- User said they will Reload/Refresh and report back, and explicitly asked to end
+  this turn. Live Integer to Roman verification is pending their next message.
+  Do not continue popup redesign or broader work before that follow-up.

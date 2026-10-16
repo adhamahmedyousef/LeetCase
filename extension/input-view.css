@@ -12,6 +12,7 @@
   white-space: inherit;
 }
 [data-leetcase-view] .leetcase-declaration { cursor: copy; }
+[data-leetcase-view][data-leetcase-layout="paragraph"] .leetcase-code { white-space: pre-wrap; }
 [data-leetcase-view] .leetcase-original-toggle {
   appearance: none;
   float: right;

@@ -33,6 +33,17 @@ test('malformed or executable input is rejected', () => {
 });
 
 const single = (type, source) => format(`value = ${source}`, `void f(${type} value) {}`);
+test('Integer to Roman uses its real single-parameter signature', () => {
+  const code = 'class Solution { public: string intToRoman(int num) { } };';
+  for (const value of [3749, 58, 1994]) assert.equal(format(`num = ${value}`, code), `int num = ${value};`);
+});
+test('two arrays bind independently by parameter name, even in reversed example order', () => {
+  const code = 'double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {}';
+  assert.equal(format('nums1 = [1,3], nums2 = [2]', code), 'vector<int> nums1 = {1, 3};\nvector<int> nums2 = {2};');
+  assert.equal(format('nums2 = [2], nums1 = []', code), 'vector<int> nums2 = {2};\nvector<int> nums1 = {};');
+  assert.equal(format('nums1 = [1], nums3 = [2]', code), null);
+  assert.equal(format('nums1 = [1], nums2 = [2]', 'void f(vector<int>& nums1, vector<int>& nums1) {}'), null);
+});
 test('nested integer and string vectors preserve shape, including empty rows', () => {
   assert.equal(single('vector<vector<int>>', '[[1,2],[],[3]]'), 'vector<vector<int>> value = {{1, 2}, {}, {3}};');
   assert.equal(single('vector<vector<vector<int>>>', '[[[1]],[],[[]]]'), 'vector<vector<vector<int>>> value = {{{1}}, {}, {{}}};');

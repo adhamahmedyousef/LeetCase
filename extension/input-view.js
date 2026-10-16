@@ -20,14 +20,20 @@
   }
   function clear() { for (const record of records) restore(record); }
   function mount(node, formatted) {
+    const paragraphLayout = node.nodeType === Node.ELEMENT_NODE;
+    const originalFont = paragraphLayout ? getComputedStyle(node).font : null;
     const original = document.createElement("span");
     original.dataset.leetcaseOriginal = "";
     node.replaceWith(original);
-    original.append(node); // Keep the exact original Text node; never overwrite it.
+    original.append(node); // Keep the exact original input node; never overwrite it.
     original.hidden = true;
 
     const host = document.createElement("span");
     host.dataset.leetcaseView = "";
+    if (paragraphLayout) {
+      host.dataset.leetcaseLayout = "paragraph";
+      host.style.font = originalFont;
+    }
     applyStyle(host);
     const code = document.createElement("span");
     code.className = "leetcase-code";

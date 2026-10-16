@@ -81,7 +81,9 @@
         const param = /^\s*(.*?)\s*\b([A-Za-z_]\w*)\s*$/.exec(part);
         return param ? { name: param[2], type: param[1].replace(/\bconst\b/g, "").replace(/std::/g, "").replace(/[&\s]/g, "") } : null;
       });
-      if (params.length === inputs.length && params.every((p, i) => p?.name === inputs[i].name)) candidates.push(params);
+      if (params.length === inputs.length && params.every(Boolean) && new Set(params.map(p => p.name)).size === params.length && inputs.every(input => params.some(p => p.name === input.name))) {
+        candidates.push(inputs.map(input => params.find(p => p.name === input.name)));
+      }
     }
     return candidates.length === 1 ? candidates[0] : null;
   }
