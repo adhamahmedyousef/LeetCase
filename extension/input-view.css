@@ -38,3 +38,4 @@
 [data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-type { color: var(--leetcase-type); }
 [data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-number { color: var(--leetcase-number); }
 [data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-variable { color: var(--leetcase-variable); }
+[data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-string { color: var(--leetcase-string); }

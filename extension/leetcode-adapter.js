@@ -26,13 +26,13 @@
     const editor = document.getElementById("editor");
     const light = editor?.querySelector(".monaco-editor.vs:not(.vs-dark)");
     const colors = light
-      ? { keyword: "#0000ff", type: "#267f99", number: "#098658", variable: "#001080" }
-      : { keyword: "#569cd6", type: "#4ec9b0", number: "#b5cea8", variable: "#9cdcfe" };
+      ? { keyword: "#0000ff", type: "#267f99", number: "#098658", variable: "#001080", string: "#a31515" }
+      : { keyword: "#569cd6", type: "#4ec9b0", number: "#b5cea8", variable: "#9cdcfe", string: "#ce9178" };
     const sampled = new Set();
     for (const token of editor?.querySelectorAll(".view-lines .view-line span[class*='mtk']") ?? []) {
       const text = token.textContent.trim();
-      const kind = /\bint\b/.test(text) ? "keyword" : /\bvector\b/.test(text) ? "type" :
-        /^-?\d+$/.test(text) ? "number" : parameterNames.includes(text) ? "variable" : null;
+      const kind = /^["']/.test(text) ? "string" : /\b(int|long|double|float|bool|char|true|false)\b/.test(text) ? "keyword" : /\b(vector|string)\b/.test(text) ? "type" :
+        /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?(?:LL|f)?$/i.test(text) ? "number" : parameterNames.includes(text) ? "variable" : null;
       if (kind && !sampled.has(kind)) {
         colors[kind] = getComputedStyle(token).color;
         sampled.add(kind);

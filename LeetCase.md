@@ -1,0 +1,151 @@
+# LeetCase
+
+Project handoff and decision record. Updated 2026-10-16, Africa/Cairo.
+Read this file before continuing work; update it when behavior or status changes.
+
+## Identity and scope
+
+- Name: **LeetCase**, without a dash or brand suffix in Chrome's extension name.
+- Brand: **By VoidHub**, linking to https://voidhub.co. No arrow beside VoidHub in README.
+- Repository: https://github.com/adhamahmedyousef/LeetCase, branch `main`.
+- Workspace: `C:/Users/j/OneDrive/Desktop/LeetCase`.
+- License: MIT. Copyright (c) 2026 VoidHub. Keep the MIT permission notice intact.
+- Open source; contributions through PRs. The owner reviews and decides what to merge.
+- Independent of LeetCode, with no affiliation/endorsement or global novelty claim.
+- Name availability needs checking before public marketing/store publication.
+  The user reported a VS Code tool called LeetCase and a similar tool LeetParse;
+  this is recorded context, not a fresh trademark/name search.
+
+## Working agreement
+
+Work in small stages: explain the change, implement it, test it, then wait for
+the user's next stage. Do not build the entire roadmap in one pass.
+GitHub push was explicitly authorized in this conversation; do not create another
+repository, publish a store listing or deploy unrelated services without a request.
+
+The current request expands C++ input types and records this file. The user says
+the existing extension works well. **Popup/exterior redesign is the next stage;
+do not redesign it during the type expansion.** Python and JavaScript come later.
+
+## Current behavior (source version 0.3.0)
+
+- Chrome Manifest V3, no dependencies or build step, no background worker.
+- A content script operates on `https://leetcode.com/problems/*` and the www alias.
+- Only the example data immediately after **Input:** in the description changes.
+  Output, Explanation, the statement, solution code and runnable testcases stay intact.
+- Uses the selected editor language and parameter names/types from the visible
+  C++ function declaration. Tracks language changes, SPA navigation and rerenders.
+- Unsupported languages/types/layouts restore or preserve the original example.
+- Input uses the original font and plain text layout, without a card/background.
+- **Original** is a small button on the right of the Input row, as requested in
+  the user's marked screenshot. It toggles between original and formatted data.
+- No standalone Copy button. Double-click a declaration to copy that variable's
+  complete declaration; Enter/Space also copy when the declaration has focus.
+- Successful clipboard writes show **Copied**. Copy errors show retry feedback.
+  The copied text contains only the declaration, without credits or page footer.
+- Popup has connection status, By VoidHub link, About, copyright and Color Mode.
+- **Color Mode** defaults off, updates open tabs and persists across browser
+  restarts through `chrome.storage.local`, key `leetcaseColorMode`.
+- Colors use visible Monaco token colors when available; missing categories
+  use a VS-style light/dark palette. Custom themes may use fallback colors.
+- Only declared API permission: `storage`. No analytics, external requests,
+  account data, browsing-history permission or saved solution/testcase content.
+
+## Supported C++ types
+
+| Type | Details |
+| --- | --- |
+| `int` | Signed 32-bit values; range/type checked |
+| `long long` | Full signed 64-bit range, exact large-integer parsing, valid LLONG_MIN expression |
+| `double`, `float` | Finite values; decimals/exponents, negative zero, valid literal suffixes; float overflow rejected |
+| `bool` | JSON true/false, without silently converting 0/1 |
+| `string` | Empty strings, Unicode, quotes, backslashes, controls and embedded NUL |
+| `char` | One ASCII character, with proper C++ escaping |
+| `vector<T>` | Recursive nesting of supported types; empty vectors and empty/ragged rows |
+
+Examples: `vector<vector<int>>`, `vector<string>`, `vector<vector<char>>`,
+`vector<bool>` and `vector<long long>`. `std::`, references and const qualifiers
+in the bounded supported function signature are normalized for local declarations.
+
+The parser follows structure and quotes; it does not globally replace brackets.
+Strings containing NUL use a length-aware constructor so their data is not truncated.
+Unsupported input rejects the whole example instead of producing a partial conversion.
+
+## Files and boundaries
+
+| File | Role |
+| --- | --- |
+| `extension/manifest.json` | Chrome entrypoints, version, match patterns and storage permission |
+| `extension/core.js` | Literal parser, parameter reader, recursive typed C++ formatter |
+| `extension/highlight.js` | Lossless tokens for generated C++ declarations |
+| `extension/settings.js` | Shared persistent Color Mode preference and live notifications |
+| `extension/leetcode-adapter.js` | Site selectors, visible code/language and Monaco palette reading |
+| `extension/input-view.js` | Reversible Input-only rendering, Original and double-click copy |
+| `extension/input-view.css` | Styles scoped to extension-owned nodes |
+| `extension/content.js` | Filtered/debounced observation and reconciliation |
+| `extension/popup.*` | Popup presentation, connection check and settings control |
+| `tests/*.test.cjs` | Parser/formatter, highlight and settings tests |
+| `tests/cpp-roundtrip.cjs` | Native C++20 compilation and independent value assertions |
+| `tests/fixture.*` | Local DOM integration fixture, including expanded-input button |
+| `docs/architecture.md` | Detailed architecture, limits and safety boundaries |
+| `README.md`, `LICENSE`, `CONTRIBUTING.md` | Concise public description, MIT terms and PR policy |
+| `dist/` | Ignored local ZIPs/screenshots, not tracked source |
+
+Do not inject into React/Monaco private state or overwrite original input text.
+The original Text node is retained in a hidden wrapper, revealed by Original and
+unwrapped on cleanup. Use `textContent` for rendering, never raw input as HTML.
+
+## Verification and current evidence
+
+- User confirmed the extension works well after the Original/Color Mode release
+  (0.2.1), following actual unpacked Chrome loading and page refresh.
+- 0.3.0 type expansion: **16 Node tests passed**.
+- Native Windows g++ C++20 `-pedantic-errors` verification passed:
+  **168 generated declarations and 404 independent value assertions**.
+  Includes all 128 ASCII characters, quote/backslash/control escapes, embedded NUL,
+  Unicode UTF-8 bytes, signed 64-bit extrema and float/double bit patterns,
+  including binary32 midpoint rounding regressions.
+- Local browser integration exercised matrices, words, escaped text, char grids,
+  bool, double and an integer above 2^53 together. Original data/runnable inputs
+  stayed intact and double-click showed Copied with Color Mode enabled.
+- This latest type expansion has not yet been user-confirmed on live LeetCode.
+  Do not describe local fixtures/native compilation as live-site verification.
+- Earlier local checks covered Original restoration, language changes, SPA
+  navigation, example rerenders, empty arrays and no duplicate mounted views.
+- Storage tests cover persistence across fresh contexts, open-tab notifications,
+  failed writes and a setting change during the initial asynchronous read.
+
+Commands: `node --test` and `node tests/cpp-roundtrip.cjs` (g++ on PATH).
+For fixture testing, run `python -m http.server 8765 --bind 127.0.0.1` in the project
+and open `http://127.0.0.1:8765/tests/fixture.html`. The fixture's Chrome/storage
+shim is test-only and is not part of the shipped extension.
+
+## Known limits and remaining work
+
+1. **Next requested stage:** polish the extension popup/exterior, after the user
+   reviews this type expansion. Keep the in-page interaction agreed above.
+2. Verify 0.3.0 on several real LeetCode problems after extension Reload + page Refresh.
+   Current adapter accepts only the observed `pre > strong Input:` + text +
+   `strong Output:` example layout. Add other layouts only after observing them.
+3. **TreeNode and ListNode remain unsupported.** Design explicit builders with
+   LeetCode's serialization rules; never reinterpret their input arrays as vectors.
+4. Python then JavaScript formatters and language-specific function signatures.
+5. Bounded C++ signature reader is not a full parser. If the declaration is outside
+   Monaco's rendered viewport, missing, overloaded/ambiguous or unsupported,
+   preserve original input. Full model integration needs a separate design decision.
+6. Maps/sets, objects, pointers, design-problem operations, optionals, arbitrary
+   user-defined structures and non-ASCII char literals are not supported.
+7. Input bounds: 200,000 UTF-16 code units, 32 value nesting levels and 16 vector
+   type nesting levels, with 128 characters per numeric literal. Large/custom
+   schemas outside these bounds stay original.
+8. Broader real-theme/light-mode/narrow-pane/browser testing, including float
+   boundary regressions and selector changes when LeetCode updates its DOM.
+9. Public distribution polish: icons, versioned ZIP/release documentation and
+   optional packaging automation. No store listing exists. Initial installation
+   stays extract ZIP → chrome://extensions → Developer mode → Load unpacked.
+10. Chrome Web Store later: recheck current developer fee, policies, name/branding
+    and privacy disclosures before any requested store publication.
+
+Updates are manual. Existing Chrome installs need **Reload** on the extension
+card, then **Refresh** on the problem page. Browser automation cannot claim
+`chrome://extensions` in this setup, so the user performs that reload step.

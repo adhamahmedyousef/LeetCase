@@ -2,10 +2,10 @@
 (() => {
   "use strict";
   function tokenize(declaration) {
-    return (declaration.match(/[A-Za-z_]\w*|-?\d+|\s+|./g) ?? []).map(text => ({
+    return (declaration.match(/"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|[A-Za-z_]\w*|-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?(?:LL|f)?|\s+|./g) ?? []).map(text => ({
       text,
-      kind: text === "int" ? "keyword" : text === "vector" ? "type" :
-        /^-?\d+$/.test(text) ? "number" : /^[A-Za-z_]\w*$/.test(text) ? "variable" : "plain",
+      kind: /^["']/.test(text) ? "string" : /^(int|long|double|float|bool|char|true|false)$/.test(text) ? "keyword" : /^(vector|string)$/.test(text) ? "type" :
+        /^-?\d/.test(text) ? "number" : /^[A-Za-z_]\w*$/.test(text) ? "variable" : "plain",
     }));
   }
   globalThis.LeetCase.highlight = Object.freeze({ tokenize });

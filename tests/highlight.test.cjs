@@ -12,3 +12,11 @@ test('syntax tokens preserve every character including negative values and empty
     assert.equal(tokens.find(token => token.text === text).kind, kind);
   }
 });
+test('quoted text, character escapes, floating values and integer suffixes remain whole tokens', () => {
+  for (const code of ['string s = "int [a,b] \\"quoted\\"";', "char c = '\\'';", 'double x = -1.5e-20;', 'long long x = 9223372036854775807LL;']) {
+    assert.equal(tokenize(code).map(token => token.text).join(''), code);
+  }
+  const quoted = tokenize('string s = "int [a,b]";').find(token => token.kind === 'string');
+  assert.equal(quoted.text, '"int [a,b]"');
+  assert.equal(tokenize('true')[0].kind, 'keyword');
+});

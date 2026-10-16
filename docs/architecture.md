@@ -28,12 +28,27 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
 
 ## Safety and lifecycle
 
-- Parse assignments using quote/depth tracking and `JSON.parse`, never `eval` or
-  global bracket replacement. Resolve types from a matching function declaration.
-- This stage accepts only signed 32-bit `int` and `vector<int>`, including `[]`.
-  Reject nested arrays, floating point, strings, unsupported parameter types,
-  pointers (including TreeNode/ListNode), ambiguous signatures and malformed input.
+- Parse assignments using quote/depth tracking and a bounded JSON-literal reader,
+  never `eval` or global bracket replacement. JSON string decoding uses `JSON.parse`;
+  unsafe integer literals use `BigInt` to avoid JavaScript precision loss.
+  Resolve types from a matching function declaration.
+- Supported types: `int`, `long long`, `float`, `double`, `bool`, `string`, ASCII
+  `char`, and recursive `vector<T>` of these types, including empty/ragged arrays.
+  Validate values recursively against the declared type; do not infer vector types.
+  Reject unsupported parameter types, pointers (including TreeNode/ListNode),
+  null elements, ambiguous signatures and malformed input.
   A rejected example stays original in full; no partial conversion.
+- Escape quotes, backslashes and controls as valid C++ literals. Fixed three-digit
+  octal escapes cannot absorb following digits. Strings with embedded NUL use the
+  length-aware `string(literal, utf8ByteLength)` constructor. Reject unpaired UTF-16
+  surrogates and non-ASCII `char` values. Signed 64-bit bounds are enforced, with
+  a standards-compliant expression for LLONG_MIN. Float/double values must be finite
+  (float overflow is rejected); rendered literals include the appropriate suffix.
+  Float values are rounded to binary32 before emitting a nine-significant-digit
+  decimal, avoiding C++ literal rounding changing a midpoint value.
+- Bound one input region to 200,000 UTF-16 code units, 32 value nesting levels and
+  16 vector type nesting levels and 128 characters per numeric literal. Beyond
+  these limits preserve the original.
 - Read only the rendered Monaco lines. If the signature is not in those lines,
   preserve original examples. Full editor-model integration is deliberately deferred.
 - Only support the observed `pre > strong Input:` + text + `strong Output:` shape.
@@ -75,5 +90,10 @@ and the actual extension scripts; its Chrome storage/connection shim is test-onl
 Chrome extension APIs, clipboard permissions and actual site integration still
 require a loaded unpacked extension on LeetCode.
 
-Next adapters/formatters must preserve these boundaries. Nested values,
-TreeNode/ListNode builders, Python and JavaScript remain separate future work.
+`node tests/cpp-roundtrip.cjs` compiles generated declarations with g++ C++20
+and checks values independently, including IEEE bit patterns and UTF-8 bytes.
+It requires g++ on PATH and creates/removes its own verified temporary directory.
+
+Next adapters/formatters must preserve these boundaries. TreeNode/ListNode
+builders, Python and JavaScript remain separate future work. The root
+`LeetCase.md` holds the user requirements, current verification and backlog.

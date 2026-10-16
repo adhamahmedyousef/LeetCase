@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "LeetCase",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "permissions": ["storage"],
-  "description": "C++ input example formatting and copying, by VoidHub. Early preview for int and vector<int>. Independent of LeetCode.",
+  "description": "C++ testcase display and copying with typed values, nested vectors and optional syntax colors. By VoidHub. Independent of LeetCode.",
   "action": {
     "default_title": "LeetCase",
     "default_popup": "popup.html"

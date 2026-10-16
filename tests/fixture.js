@@ -35,3 +35,12 @@ document.getElementById('new-example').onclick = () => {
   next.append(input, ' nums = [], target = -1\n', output, ' []\n');
   pre.replaceWith(next);
 };
+document.getElementById('expanded-inputs').onclick = () => {
+  document.querySelector('.view-line').textContent = 'void f(vector<vector<int>>& matrix, vector<string>& words, string text, vector<vector<char>>& board, bool enabled, double ratio, long long total) {}';
+  const pre = document.createElement('pre');
+  const input = document.createElement('strong'); input.textContent = 'Input:';
+  const output = document.createElement('strong'); output.textContent = 'Output:';
+  const source = ' matrix = [[1,2],[],[3]], words = ["hello","world"], text = ' + JSON.stringify('a"b\\c\n') + ', board = [["a","b"],[]], enabled = true, ratio = 1.25, total = 9007199254740993\n';
+  pre.append(input, source, output, ' fixture output unchanged\n');
+  document.querySelector('[data-track-load="description_content"]').replaceChildren(pre);
+};

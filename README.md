@@ -6,7 +6,7 @@ An open-source Chrome extension for displaying and copying LeetCode testcases in
 your editor's language, while preserving the original test data. C++ first, then
 Python and JavaScript.
 
-**Early preview:** C++ `int` and `vector<int>` inputs in description examples,
+**Early preview:** C++ numbers, booleans, strings, ASCII chars and nested vectors in description examples,
 with native-looking text and an Original toggle. Double-click a declaration to copy it.
 Other types stay unchanged.
 Optional **Color Mode** adds IDE-style syntax colors and remembers your choice.
@@ -28,3 +28,5 @@ Have an improvement? [Open a pull request](https://github.com/adhamahmedyousef/L
 The maintainer reviews contributions and chooses what to merge.
 
 © 2026 VoidHub. Released under the [MIT License](LICENSE).
+
+[Project status and next steps](LeetCase.md)
