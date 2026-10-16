@@ -9,8 +9,10 @@ underline. The popup follows that palette: charcoal `#121A22`, white `#F4F7FA`,
 teal `#2B7B87`, muted text `#A2ABB9`. Segoe UI/Arial serve the controls and title;
 Consolas/Courier New serves the illustrative code. No remote font requests.
 
-The LS mark is a typographic placeholder. To create a final image icon, use
-[the prompt](icon-prompt.md) with [the VoidHub reference](assets/voidhub-reference.png).
+The LS artwork in the popup and extension toolbar is the final image supplied by
+the user at `extension/icons/leetcase.png`. The earlier [icon prompt](icon-prompt.md)
+and [VoidHub reference](assets/voidhub-reference.png) remain available as design
+history.
 
 ## Local preview of the actual popup
 

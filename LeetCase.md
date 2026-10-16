@@ -26,7 +26,7 @@ repository, publish a store listing or deploy unrelated services without a reque
 The current request applies the approved popup design C without a Connected row. The user says
 the existing extension works well. The user selected the Code first popup direction. Python and JavaScript come later.
 
-## Current behavior (source version 0.4.0)
+## Current behavior (source version 0.4.1)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -43,8 +43,8 @@ the existing extension works well. The user selected the Code first popup direct
 - Successful clipboard writes show **Copied**. Copy errors show retry feedback.
   The copied text contains only the declaration, without credits or page footer.
 - Popup uses the approved dark Code first design: By VoidHub link, LeetCase title,
-  LS placeholder monogram, illustrative code preview, Color Mode, About, GitHub
-  and copyright. The user explicitly removed the entire Connected row.
+  the user's supplied LS logo, illustrative code preview, Color Mode, About,
+  GitHub and copyright. The user explicitly removed the entire Connected row.
 - **Color Mode** defaults off, updates open tabs and persists across browser
   restarts through `chrome.storage.local`, key `leetcaseColorMode`.
 - Colors use visible Monaco token colors when available; missing categories
@@ -239,3 +239,18 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   Reload is still pending; do not claim that review was performed.
 - Initial A/B/C previews are retained in docs/design for reference. The actual
   extension source, not those initial concepts, is the current approved design.
+
+## 0.4.1: user-supplied LS logo
+
+- Replaced the typographic LS placeholder in the popup with the exact logo image
+  supplied by the user. The copied `extension/icons/leetcase.png` has the same
+  SHA256 as the source attachment; no artwork edits were made.
+- Registered that high-resolution PNG as the extension/action icon and popup
+  header image. Manifest sizes 16, 32, 48 and 128 currently reference this same
+  1024×1024 source image, which Chrome scales for each use.
+- Kept popup design C, Color Mode persistence, and the absence of Connected.
+- Bumped the extension and popup display version to 0.4.1. Regenerated the local
+  popup preview and confirmed the logo loads, Color Mode remains visible, and
+  Connected is absent. Real Chrome extension Reload is still required to see
+  the new toolbar icon and popup in the installed unpacked extension.
+- Included the logo in the versioned 0.4.1 ZIP for local installation.
