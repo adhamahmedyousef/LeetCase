@@ -6,18 +6,17 @@ An open-source Chrome extension for displaying and copying LeetCode testcases in
 your editor's language, while preserving the original test data. C++ first, then
 Python and JavaScript.
 
-**Early preview:** C++ numbers, booleans, strings, ASCII chars and nested vectors in description examples,
-with native-looking text and an Original toggle. Double-click a declaration to copy it.
-Other types stay unchanged.
-Optional **Color Mode** adds IDE-style syntax colors and remembers your choice.
-Independent of LeetCode; not
-affiliated with or endorsed by it.
+Formats supported C++ testcase values in LeetCode problem examples while keeping
+the original data intact. Supports numbers, booleans, strings, ASCII chars and
+nested vectors. Use **Original** to switch views, or double-click a declaration
+to copy it. Optional **Color Mode** adds IDE-style syntax colors and remembers
+your choice. Independent of LeetCode; not affiliated with or endorsed by it.
 
 ## Install
 
-1. Download and extract the repository ZIP, or clone this repository.
+1. Download and extract the extension ZIP from [Releases](https://github.com/adhamahmedyousef/LeetCase/releases), or clone this repository.
 2. Open `chrome://extensions` and enable **Developer mode**.
-3. Click **Load unpacked** and select the `extension` folder.
+3. Click **Load unpacked** and select the extracted release folder, or the `extension` folder from a clone.
 4. Open a LeetCode problem, refresh the page, then click **LeetCase** in the Extensions menu.
 
 For manual updates, replace the files, reload the extension, and refresh the problem page.

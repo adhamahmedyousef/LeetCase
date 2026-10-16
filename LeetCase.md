@@ -123,8 +123,8 @@ shim is test-only and is not part of the shipped extension.
 
 ## Known limits and remaining work
 
-1. Review the implemented Code first popup (0.4.0) after Chrome Reload. Await the
-   next user-selected stage; preserve the agreed in-page interaction.
+1. User should reload the unpacked extension and refresh LeetCode to see the
+   0.4.1 logo. Continue in small stages and preserve the agreed in-page behavior.
 2. Verify 0.3.0 on several real LeetCode problems after extension Reload + page Refresh.
    The adapter supports legacy `pre` examples and modern `.example-block` paragraphs
    containing a plain `span.example-io`. Add other layouts only after observing them.
@@ -141,9 +141,8 @@ shim is test-only and is not part of the shipped extension.
    schemas outside these bounds stay original.
 8. Broader real-theme/light-mode/narrow-pane/browser testing, including float
    boundary regressions and selector changes when LeetCode updates its DOM.
-9. Public distribution polish: icons, versioned ZIP/release documentation and
-   optional packaging automation. No store listing exists. Initial installation
-   stays extract ZIP → chrome://extensions → Developer mode → Load unpacked.
+9. No Chrome Web Store listing exists. Initial installation stays extract ZIP →
+   chrome://extensions → Developer mode → Load unpacked.
 10. Chrome Web Store later: recheck current developer fee, policies, name/branding
     and privacy disclosures before any requested store publication.
 
@@ -216,8 +215,8 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   again button. Popup no longer queries active tabs or sends connection pings.
   The content script's existing diagnostic responder remains internal.
 - Charcoal background, white text and teal accent, grounded in the user's actual
-  VoidHub logo found in PVP2/branding/voidhub-logo-crops. Reference asset is saved
-  at docs/design/assets/voidhub-reference.png. System fonts only; no remote assets.
+  VoidHub logo found in PVP2/branding/voidhub-logo-crops. System fonts only; no
+  remote assets.
 - Color Mode retains the exact existing chrome.storage.local key and persistence.
   The illustrative code preview follows the saved preference. Open tabs still
   receive preference changes through the existing settings module. No data reset.
@@ -226,10 +225,9 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
 - Typography-only LS monogram is a placeholder, not a finished Chrome icon.
   The user explicitly requested **LS**, even though the product is LeetCase;
   do not silently replace it with LC. No final image icon has been installed.
-- Complete copyable Gemini/ChatGPT icon prompt: docs/design/icon-prompt.md.
-  Attach docs/design/assets/voidhub-reference.png when using it. Prompt asks for
-  white geometric LS on charcoal, a teal underline and small-size legibility,
-  without LeetCode marks, gradients, mockup scenes or extra text.
+- The Git repository previously included popup concept mockups and an icon prompt.
+  These were design-only exploration files and have been removed from the cleaned
+  project tree; the selected popup and user-supplied logo are in `extension/`.
 - Visual QA uses the actual popup source generated into ignored dist/ via
   `node tests/create-popup-preview.cjs`, with an isolated preview storage shim.
   Preview storage has its own prefix and cannot change the installed extension.
@@ -237,8 +235,8 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   Color Mode switch, colored/uncolored preview, saved state after reopening,
   About contents, and absence of Connected. Real Chrome popup review after
   Reload is still pending; do not claim that review was performed.
-- Initial A/B/C previews are retained in docs/design for reference. The actual
-  extension source, not those initial concepts, is the current approved design.
+- Initial A/B/C previews were exploration artifacts and are not part of the
+  maintained project files.
 
 ## 0.4.1: user-supplied LS logo
 
@@ -254,3 +252,18 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   Connected is absent. Real Chrome extension Reload is still required to see
   the new toolbar icon and popup in the installed unpacked extension.
 - Included the logo in the versioned 0.4.1 ZIP for local installation.
+
+## Repository cleanup and release
+
+- Removed the abandoned A/B/C popup comparison page, its isolated demo script,
+  the separate icon-generation prompt, and the unused VoidHub reference crop.
+  Kept architecture docs, tests, contributing guide, MIT license, and this
+  project handoff because they directly support development, use, or review.
+- Removed the outdated “Early preview” wording from the README. The GitHub About
+  description must be updated to remove the same wording.
+- Release assessment: version 0.4.1 is suitable as the first GitHub Release. It
+  adds the final user-provided logo, keeps the existing tested C++ behavior, and
+  has no existing releases or tags. Release asset should contain only the files
+  inside `extension/` at the ZIP root, ready for **Load unpacked** after extract.
+- Before publishing: run the current automated and native C++ checks, verify the
+  extension-only ZIP, then create tag `v0.4.1` and a non-prerelease GitHub Release.
