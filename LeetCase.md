@@ -27,7 +27,7 @@ The current request fixes Integer to Roman and verifies two-array inputs. The us
 the existing extension works well. **Popup/exterior redesign is the next stage;
 do not redesign it during the type expansion.** Python and JavaScript come later.
 
-## Current behavior (source version 0.3.1)
+## Current behavior (source version 0.3.2)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -179,3 +179,30 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
 - User said they will Reload/Refresh and report back, and explicitly asked to end
   this turn. Live Integer to Roman verification is pending their next message.
   Do not continue popup redesign or broader work before that follow-up.
+
+## 0.3.2: paragraph fonts and string-array report
+
+- User reported a different font in Valid Parentheses and unchanged examples in
+  Longest Common Prefix, supplying screenshots of both.
+- Inspected the real Longest Common Prefix tab: it was set to **Python3**.
+  Selecting C++ immediately converted both examples to `vector<string>` using
+  the existing implementation. String-array support had not regressed.
+  Python formatting remains future work; do not convert Python pages into C++.
+- Opened Valid Parentheses in Chrome and reproduced the paragraph renderer.
+  Its generated host had no font declaration, despite the previous shorthand
+  assignment. Replaced `getComputedStyle(node).font` copying with individual
+  font family/size/weight/style/stretch/variant/features/variation, line height,
+  letter spacing and word spacing properties. Computed shorthand serialization
+  can be empty for advanced font settings; individual properties avoid that loss.
+- Syntax token spans explicitly inherit the captured typography. This prevents
+  type/string coloring spans from using a different family, size or weight.
+- Popup connection response now includes the selected language. When Python3 or
+  another unsupported language is selected, it says formatting supports C++ only.
+  No popup redesign was performed.
+- Verification: 19 Node tests passed and 28 browser DOM checks passed. Added the
+  two real Longest Common Prefix cases and property-by-property typography checks
+  on the generated host and every syntax token, including advanced font settings.
+- New font behavior is locally browser-tested; live post-Reload verification is
+  still needed. The real C++ string-array conversion was verified on LeetCode.
+- Next step remains the user-reviewed popup redesign, after current fixes are
+  reviewed. Keep pending Python/JavaScript and TreeNode/ListNode work separate.

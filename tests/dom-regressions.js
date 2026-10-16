@@ -56,6 +56,15 @@
     check(getComputedStyle(cases.querySelector('.leetcase-code')).whiteSpace === 'pre-wrap', 'paragraph declarations keep separate lines');
     check(getComputedStyle(cases.querySelector('[data-leetcase-view]')).fontFamily.includes('monospace'), 'paragraph view retains original input typography');
 
+    fixture('<div class="example-block"><p><strong>Input:</strong> <span class="example-io" style="font-family: monospace; font-size: 17px; font-weight: 500; font-feature-settings: &quot;ss01&quot; on; font-variation-settings: &quot;wght&quot; 500; letter-spacing: .4px; line-height: 26px">s = &quot;()&quot;</span></p><p><strong>Output:</strong> <span class="example-io">true</span></p></div>');
+    const typographyNode = adapter.inputNodes()[0];
+    const properties = ['fontFamily', 'fontSize', 'fontWeight', 'fontFeatureSettings', 'fontVariationSettings', 'letterSpacing', 'lineHeight'];
+    const typography = Object.fromEntries(properties.map(property => [property, getComputedStyle(typographyNode)[property]]));
+    mount('bool isValid(string s) {}');
+    for (const element of [cases.querySelector('[data-leetcase-view]'), ...cases.querySelectorAll('.leetcase-declaration > span')]) {
+      check(properties.every(property => getComputedStyle(element)[property] === typography[property]), 'advanced original typography is preserved on host and syntax tokens');
+    }
+
     fixture('<div class="example-block"><p><strong>Input:</strong> <span class="example-io"><b>num = 1</b></span></p><p><strong>Output:</strong> x</p></div>');
     check(adapter.inputNodes().length === 0, 'unobserved nested markup fails closed');
     fixture('<div class="example-block"><p><strong>Input:</strong> <span class="example-io">num = 1</span> unrelated prose</p><p><strong>Output:</strong> x</p></div>');

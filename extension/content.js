@@ -62,6 +62,7 @@
     if (message?.type === "LEETCASE_PING") sendResponse({
       type: "LEETCASE_PONG",
       version: chrome.runtime.getManifest().version,
+      language: adapter.editorState().language,
       isProblemPage: /^\/problems\/[^/]+(?:\/|$)/.test(location.pathname),
     });
   });

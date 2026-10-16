@@ -14,9 +14,10 @@ async function checkConnection() {
     const response = await chrome.tabs.sendMessage(tab.id, { type: "LEETCASE_PING" });
     if (response?.type !== "LEETCASE_PONG") throw new Error("Unexpected response");
 
-    status.textContent = response.isProblemPage
-      ? `Connected to a LeetCode problem · v${response.version}`
-      : "Open a LeetCode problem, then check again.";
+    if (!response.isProblemPage) status.textContent = "Open a LeetCode problem, then check again.";
+    else if (response.language && response.language !== "C++") {
+      status.textContent = `Connected · ${response.language} selected. Formatting currently supports C++ only.`;
+    } else status.textContent = `Connected to a LeetCode problem · v${response.version}`;
   } catch {
     status.textContent = "Open a problem on leetcode.com and refresh the page, then check again.";
   } finally {

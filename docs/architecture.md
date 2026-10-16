@@ -54,7 +54,9 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
 - Support observed legacy `pre > strong Input:` + text + `strong Output:` and
   modern `.example-block` paragraphs with a plain `span.example-io` and separate
   Output paragraph. Unknown markup/prose fails closed. The modern view preserves
-  original typography and multi-line declarations.
+  original typography via individual font properties and multi-line declarations.
+  Never rely on the computed font shorthand, which can be empty for advanced
+  font configurations. Syntax spans inherit typography explicitly.
 - Move the original input node (Text or example-io span) into an extension-owned hidden wrapper, preserving
   its content and identity. Render validated declarations with `textContent`.
   Original mode shows the actual original node; cleanup unwraps it.
@@ -102,3 +104,6 @@ builders, Python and JavaScript remain separate future work. The root
 
 Browser layout regressions: `/tests/dom-regressions.html` covers both observed
 layouts, two arrays and exact original/Output/Explanation restoration.
+
+Popup connection status reports the selected editor language and explains the
+C++-only support when an unsupported language is selected.

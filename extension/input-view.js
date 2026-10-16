@@ -21,7 +21,11 @@
   function clear() { for (const record of records) restore(record); }
   function mount(node, formatted) {
     const paragraphLayout = node.nodeType === Node.ELEMENT_NODE;
-    const originalFont = paragraphLayout ? getComputedStyle(node).font : null;
+    // The font shorthand can serialize to an empty string when the site's
+    // advanced font settings cannot be represented by that shorthand.
+    const originalTypography = paragraphLayout ? getComputedStyle(node) : null;
+    const fontProperties = ["font-family", "font-size", "font-weight", "font-style", "font-stretch", "font-variant", "font-feature-settings", "font-variation-settings", "line-height", "letter-spacing", "word-spacing"];
+    const typography = originalTypography ? fontProperties.map(property => [property, originalTypography.getPropertyValue(property)]) : [];
     const original = document.createElement("span");
     original.dataset.leetcaseOriginal = "";
     node.replaceWith(original);
@@ -32,7 +36,9 @@
     host.dataset.leetcaseView = "";
     if (paragraphLayout) {
       host.dataset.leetcaseLayout = "paragraph";
-      host.style.font = originalFont;
+      for (const [property, value] of typography) {
+        if (value) host.style.setProperty(property, value);
+      }
     }
     applyStyle(host);
     const code = document.createElement("span");

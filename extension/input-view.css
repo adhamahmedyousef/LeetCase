@@ -12,6 +12,19 @@
   white-space: inherit;
 }
 [data-leetcase-view] .leetcase-declaration { cursor: copy; }
+[data-leetcase-view] :is(.leetcase-code, .leetcase-declaration, .leetcase-declaration > span) {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  font-stretch: inherit;
+  font-variant: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+}
 [data-leetcase-view][data-leetcase-layout="paragraph"] .leetcase-code { white-space: pre-wrap; }
 [data-leetcase-view] .leetcase-original-toggle {
   appearance: none;

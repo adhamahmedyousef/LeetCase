@@ -37,6 +37,11 @@ test('Integer to Roman uses its real single-parameter signature', () => {
   const code = 'class Solution { public: string intToRoman(int num) { } };';
   for (const value of [3749, 58, 1994]) assert.equal(format(`num = ${value}`, code), `int num = ${value};`);
 });
+test('Longest Common Prefix formats both real string-array examples', () => {
+  const code = 'class Solution { public: string longestCommonPrefix(vector<string>& strs) {} };';
+  assert.equal(format('strs = ["flower","flow","flight"]', code), 'vector<string> strs = {"flower", "flow", "flight"};');
+  assert.equal(format('strs = ["dog","racecar","car"]', code), 'vector<string> strs = {"dog", "racecar", "car"};');
+});
 test('two arrays bind independently by parameter name, even in reversed example order', () => {
   const code = 'double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {}';
   assert.equal(format('nums1 = [1,3], nums2 = [2]', code), 'vector<int> nums1 = {1, 3};\nvector<int> nums2 = {2};');
