@@ -23,11 +23,10 @@ the user's next stage. Do not build the entire roadmap in one pass.
 GitHub push was explicitly authorized in this conversation; do not create another
 repository, publish a store listing or deploy unrelated services without a request.
 
-The current request fixes Integer to Roman and verifies two-array inputs. The user says
-the existing extension works well. **Popup/exterior redesign is the next stage;
-do not redesign it during the type expansion.** Python and JavaScript come later.
+The current request applies the approved popup design C without a Connected row. The user says
+the existing extension works well. The user selected the Code first popup direction. Python and JavaScript come later.
 
-## Current behavior (source version 0.3.2)
+## Current behavior (source version 0.4.0)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -43,7 +42,9 @@ do not redesign it during the type expansion.** Python and JavaScript come later
   complete declaration; Enter/Space also copy when the declaration has focus.
 - Successful clipboard writes show **Copied**. Copy errors show retry feedback.
   The copied text contains only the declaration, without credits or page footer.
-- Popup has connection status, By VoidHub link, About, copyright and Color Mode.
+- Popup uses the approved dark Code first design: By VoidHub link, LeetCase title,
+  LS placeholder monogram, illustrative code preview, Color Mode, About, GitHub
+  and copyright. The user explicitly removed the entire Connected row.
 - **Color Mode** defaults off, updates open tabs and persists across browser
   restarts through `chrome.storage.local`, key `leetcaseColorMode`.
 - Colors use visible Monaco token colors when available; missing categories
@@ -122,8 +123,8 @@ shim is test-only and is not part of the shipped extension.
 
 ## Known limits and remaining work
 
-1. **Next requested stage:** polish the extension popup/exterior, after the user
-   reviews this type expansion. Keep the in-page interaction agreed above.
+1. Review the implemented Code first popup (0.4.0) after Chrome Reload. Await the
+   next user-selected stage; preserve the agreed in-page interaction.
 2. Verify 0.3.0 on several real LeetCode problems after extension Reload + page Refresh.
    The adapter supports legacy `pre` examples and modern `.example-block` paragraphs
    containing a plain `span.example-io`. Add other layouts only after observing them.
@@ -206,3 +207,35 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   still needed. The real C++ string-array conversion was verified on LeetCode.
 - Next step remains the user-reviewed popup redesign, after current fixes are
   reviewed. Keep pending Python/JavaScript and TreeNode/ListNode work separate.
+
+## 0.4.0: approved VoidHub popup design C
+
+- Prepared three local directions: Quiet dark (A), Clean light (B), Code first (C).
+  The user chose C, then explicitly asked to remove the Connected item entirely.
+- Implemented C in the real popup HTML/CSS/JS, without a Connected row or Check
+  again button. Popup no longer queries active tabs or sends connection pings.
+  The content script's existing diagnostic responder remains internal.
+- Charcoal background, white text and teal accent, grounded in the user's actual
+  VoidHub logo found in PVP2/branding/voidhub-logo-crops. Reference asset is saved
+  at docs/design/assets/voidhub-reference.png. System fonts only; no remote assets.
+- Color Mode retains the exact existing chrome.storage.local key and persistence.
+  The illustrative code preview follows the saved preference. Open tabs still
+  receive preference changes through the existing settings module. No data reset.
+- About retains C++ support scope, MIT, open-source PR policy and independence
+  from LeetCode. GitHub and By VoidHub remain real links. Copyright is unchanged.
+- Typography-only LS monogram is a placeholder, not a finished Chrome icon.
+  The user explicitly requested **LS**, even though the product is LeetCase;
+  do not silently replace it with LC. No final image icon has been installed.
+- Complete copyable Gemini/ChatGPT icon prompt: docs/design/icon-prompt.md.
+  Attach docs/design/assets/voidhub-reference.png when using it. Prompt asks for
+  white geometric LS on charcoal, a teal underline and small-size legibility,
+  without LeetCode marks, gradients, mockup scenes or extra text.
+- Visual QA uses the actual popup source generated into ignored dist/ via
+  `node tests/create-popup-preview.cjs`, with an isolated preview storage shim.
+  Preview storage has its own prefix and cannot change the installed extension.
+- Verification: all 19 existing Node tests passed. Local browser verified the
+  Color Mode switch, colored/uncolored preview, saved state after reopening,
+  About contents, and absence of Connected. Real Chrome popup review after
+  Reload is still pending; do not claim that review was performed.
+- Initial A/B/C previews are retained in docs/design for reference. The actual
+  extension source, not those initial concepts, is the current approved design.

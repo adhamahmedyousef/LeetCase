@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeetCase",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "permissions": ["storage"],
   "description": "C++ testcase display and copying with typed values, nested vectors and optional syntax colors. By VoidHub. Independent of LeetCode.",
   "action": {

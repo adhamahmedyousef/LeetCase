@@ -6,31 +6,40 @@
     <title>LeetCase</title>
     <link rel="stylesheet" href="popup.css">
     <script src="core.js" defer></script>
+    <script src="highlight.js" defer></script>
     <script src="settings.js" defer></script>
     <script src="popup.js" defer></script>
   </head>
   <body>
     <main>
-      <header>
-        <h1>LeetCase <small>0.3.2</small></h1>
-        <a class="brand" href="https://voidhub.co" target="_blank" rel="noopener noreferrer">By VoidHub <span aria-hidden="true">↗</span></a>
+      <header class="brand-row">
+        <a class="brand" href="https://voidhub.co" target="_blank" rel="noopener noreferrer">By VoidHub</a>
+        <span class="version">0.4.0</span>
       </header>
-      <p class="intro">Testcases, in your language.</p>
-      <p id="status" role="status" aria-live="polite">Checking the active tab…</p>
-      <button id="check" type="button">Check again</button>
+      <div class="identity">
+        <h1>LeetCase<span class="brand-bar" aria-hidden="true"></span></h1>
+        <span class="monogram" aria-hidden="true">LS<span></span></span>
+      </div>
+      <pre class="code-preview" id="code-preview" aria-label="C++ formatting preview"></pre>
       <label class="setting" for="color-mode">
-        <span>Color Mode<small>IDE-style syntax colors</small></span>
-        <input id="color-mode" type="checkbox" role="switch" disabled>
+        <span class="setting-copy"><strong id="color-mode-label">Color Mode</strong><small id="color-mode-help">Keep syntax colors on</small></span>
+        <input id="color-mode" type="checkbox" role="switch" aria-labelledby="color-mode-label" aria-describedby="color-mode-help" disabled>
+        <span class="switch" aria-hidden="true"></span>
       </label>
       <p id="setting-status" role="status" aria-live="polite"></p>
-      <p class="note">C++ values and nested vectors. Double-click a declaration to copy. Use Original to toggle the original input.</p>
-      <details>
-        <summary>About</summary>
-        <p>LeetCase aims to display and copy LeetCode testcases in your editor's language, while preserving the original test data.</p>
-        <p>Open source under the MIT License. Improvements are welcome through <a href="https://github.com/adhamahmedyousef/LeetCase/pulls" target="_blank" rel="noopener noreferrer">pull requests</a>, reviewed by the maintainer.</p>
-        <p>Independent project. Not affiliated with or endorsed by LeetCode.</p>
-      </details>
-      <footer>© 2026 VoidHub. Licensed under MIT.</footer>
+      <p class="hint">Double-click a declaration to copy.</p>
+      <footer>
+        <div class="footer-links">
+          <details>
+            <summary>About</summary>
+            <p>LeetCase formats and copies testcase inputs inside LeetCode. Currently supports C++.</p>
+            <p>Open source under MIT. <a href="https://github.com/adhamahmedyousef/LeetCase/pulls" target="_blank" rel="noopener noreferrer">Pull requests</a> are welcome and reviewed by the maintainer.</p>
+            <p>Independent of LeetCode. Not affiliated with or endorsed by it.</p>
+          </details>
+          <a href="https://github.com/adhamahmedyousef/LeetCase" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        <p class="copyright">© 2026 VoidHub · MIT License</p>
+      </footer>
     </main>
   </body>
 </html>

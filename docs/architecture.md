@@ -21,7 +21,7 @@ LeetCode DOM → adapter → input assignments + editor signature → C++ format
 | `input-view.js` | Reversible input-only presentation, local toggle, data-only clipboard action |
 | `input-view.css` | Styles scoped exclusively to extension-owned nodes |
 | `content.js` | Debounced reconciliation, lifecycle, popup connection response |
-| `popup.*` | Connection status, project information, links |
+| `popup.*` | Approved Code first interface, illustrative preview, persistent Color Mode and links |
 
 Classic scripts execute in manifest order in Chrome's isolated content-script
 world. `LeetCase` is an internal namespace; no dependencies or page-world bridge.
@@ -105,5 +105,6 @@ builders, Python and JavaScript remain separate future work. The root
 Browser layout regressions: `/tests/dom-regressions.html` covers both observed
 layouts, two arrays and exact original/Output/Explanation restoration.
 
-Popup connection status reports the selected editor language and explains the
-C++-only support when an unsupported language is selected.
+Popup 0.4.0 intentionally removes connection status and active-tab queries.
+C++ scope is explained in About. Color Mode uses the same shared settings module
+and drives a static illustrative preview, never the user's editor content.
