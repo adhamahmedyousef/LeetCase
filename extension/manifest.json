@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "LeetCase — Built by VoidHub",
+  "name": "LeetCase",
   "version": "0.1.0",
-  "description": "Independent testcase display helper. Stage 1: local connection check only. Not affiliated with LeetCode.",
+  "description": "An open-source testcase display helper by VoidHub. Early preview: connection check only. Independent of LeetCode.",
   "action": {
     "default_title": "LeetCase",
     "default_popup": "popup.html"
