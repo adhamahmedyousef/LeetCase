@@ -15,6 +15,8 @@ LeetCode DOM → adapter → input assignments + editor signature → C++ format
 | File | Responsibility |
 | --- | --- |
 | `core.js` | Pure assignment parser, bounded C++ parameter reader, type-checked formatter |
+| `highlight.js` | Lossless syntax tokens for the supported generated declarations |
+| `settings.js` | Local Color Mode preference shared by popup and content scripts |
 | `leetcode-adapter.js` | All site-specific selectors; reads rendered language/code and exact input text nodes |
 | `input-view.js` | Reversible input-only presentation, local toggle, data-only clipboard action |
 | `input-view.css` | Styles scoped exclusively to extension-owned nodes |
@@ -53,12 +55,23 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
   restore the original input. No reload or whole-page replacement is used.
 - Controls and styles live entirely inside the Input region. No runtime data is
   modified. Text can occupy more vertical space because declarations wrap.
+- Original is a small button floated to the right of the Input row, without
+  repositioning any LeetCode-owned ancestor or framing the input text.
+- Color Mode defaults off. `chrome.storage.local` stores one boolean and propagates
+  changes to already-open tabs. It persists across navigations and browser restarts.
+  The only API permission is `storage`; no account data or browsing history is stored.
+- Highlighting uses plain text spans and preserves the exact copy payload. Colors
+  are sampled from rendered Monaco tokens for the available types/variables/numbers;
+  unavailable colors use a VS-style light/dark palette. Custom themes with unseen
+  token categories therefore use fallback colors for those categories. Theme class
+  changes trigger a palette refresh. Disabling Color Mode restores inherited colors
+  without rebuilding input nodes or resetting the Original toggle.
 
 ## Verification
 
-Run `node --test tests/core.test.cjs`. Use `tests/fixture.html` through a local
+Run `node --test`. Use `tests/fixture.html` through a local
 HTTP server for DOM checks. The fixture reuses the live observed example markup
-and the actual extension scripts; its Chrome connection shim is test-only.
+and the actual extension scripts; its Chrome storage/connection shim is test-only.
 Chrome extension APIs, clipboard permissions and actual site integration still
 require a loaded unpacked extension on LeetCode.
 

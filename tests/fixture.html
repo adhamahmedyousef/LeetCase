@@ -4,7 +4,7 @@
 <base href="/tests/">
 <title>LeetCase input integration fixture</title>
 <link rel="stylesheet" href="../extension/input-view.css">
-<style>body { font: 16px/1.6 system-ui; padding: 24px; } pre { white-space: pre-wrap; font-size: 14px; } .view-lines { white-space: pre; }</style>
+<style>body { font: 16px/1.6 system-ui; padding: 24px; max-width: 760px; background: #262626; color: #c1c1c1; } pre { white-space: pre-wrap; font-size: 14px; } .view-lines { white-space: pre; }</style>
 <h1>Two Sum — integration fixture</h1>
 <div id="editor">
   <button aria-haspopup="dialog" id="language">C++</button>
@@ -13,6 +13,7 @@
 <button id="switch">Switch language</button>
 <button id="navigate">Simulate next problem</button>
 <button id="new-example">Simulate example rerender</button>
+<label><input id="color-mode" type="checkbox"> Color Mode</label>
 <div data-track-load="description_content">
 <p>Example 1:</p>
 <pre><strong>Input:</strong> nums = [2,7,11,15], target = 9
@@ -28,6 +29,8 @@
 9</textarea></label>
 <script src="fixture.js"></script>
 <script src="../extension/core.js"></script>
+<script src="../extension/highlight.js"></script>
+<script src="../extension/settings.js"></script>
 <script src="../extension/leetcode-adapter.js"></script>
 <script src="../extension/input-view.js"></script>
 <script src="../extension/content.js"></script>

@@ -9,6 +9,7 @@ Python and JavaScript.
 **Early preview:** C++ `int` and `vector<int>` inputs in description examples,
 with native-looking text and an Original toggle. Double-click a declaration to copy it.
 Other types stay unchanged.
+Optional **Color Mode** adds IDE-style syntax colors and remembers your choice.
 Independent of LeetCode; not
 affiliated with or endorsed by it.
 

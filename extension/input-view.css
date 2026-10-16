@@ -14,16 +14,19 @@
 [data-leetcase-view] .leetcase-declaration { cursor: copy; }
 [data-leetcase-view] .leetcase-original-toggle {
   appearance: none;
-  margin-inline: 8px 0;
-  padding: 0;
-  border: 0;
-  background: none;
+  float: right;
+  margin: 0 0 4px 12px;
+  min-height: 26px;
+  padding: 2px 9px;
+  border: 1px solid #7c8ba477;
+  border-radius: 5px;
+  background: #7c8ba410;
   color: inherit;
-  font: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font: 12px/1.5 system-ui, sans-serif;
+  white-space: normal;
   cursor: pointer;
 }
+[data-leetcase-view] .leetcase-original-toggle:hover { background: #7c8ba422; }
 [data-leetcase-view] .leetcase-original-toggle[aria-pressed="true"] { font-weight: bold; }
 [data-leetcase-view] .leetcase-feedback { margin-inline-start: 8px; color: inherit; font: inherit; }
 [data-leetcase-view] .leetcase-feedback:empty { display: none; }
@@ -31,3 +34,7 @@
   outline: 2px solid #538fee;
   outline-offset: 2px;
 }
+[data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-keyword { color: var(--leetcase-keyword); }
+[data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-type { color: var(--leetcase-type); }
+[data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-number { color: var(--leetcase-number); }
+[data-leetcase-view][data-leetcase-color-mode="true"] .leetcase-token-variable { color: var(--leetcase-variable); }

@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LeetCase",
-  "version": "0.2.0",
+  "version": "0.2.1",
+  "permissions": ["storage"],
   "description": "C++ input example formatting and copying, by VoidHub. Early preview for int and vector<int>. Independent of LeetCode.",
   "action": {
     "default_title": "LeetCase",
@@ -10,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problems/*", "https://www.leetcode.com/problems/*"],
-      "js": ["core.js", "leetcode-adapter.js", "input-view.js", "content.js"],
+      "js": ["core.js", "highlight.js", "settings.js", "leetcode-adapter.js", "input-view.js", "content.js"],
       "css": ["input-view.css"],
       "run_at": "document_idle"
     }

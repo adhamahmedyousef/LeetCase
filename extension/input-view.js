@@ -1,6 +1,17 @@
 (() => {
   "use strict";
   const records = new Set();
+  let colorMode = false;
+  let colors = {};
+  function applyStyle(host) {
+    host.dataset.leetcaseColorMode = String(colorMode);
+    for (const [kind, color] of Object.entries(colors)) host.style.setProperty(`--leetcase-${kind}`, color);
+  }
+  function setAppearance(enabled, palette) {
+    colorMode = enabled;
+    colors = palette;
+    for (const record of records) applyStyle(record.host);
+  }
   function restore(record) {
     record.dispose();
     record.host.remove();
@@ -17,6 +28,7 @@
 
     const host = document.createElement("span");
     host.dataset.leetcaseView = "";
+    applyStyle(host);
     const code = document.createElement("span");
     code.className = "leetcase-code";
     const feedback = document.createElement("span");
@@ -41,7 +53,12 @@
       if (index) code.append(document.createTextNode("\n"));
       const value = document.createElement("span");
       value.className = "leetcase-declaration";
-      value.textContent = declaration;
+      for (const token of globalThis.LeetCase.highlight.tokenize(declaration)) {
+        const span = document.createElement("span");
+        span.className = `leetcase-token-${token.kind}`;
+        span.textContent = token.text;
+        value.append(span);
+      }
       value.tabIndex = 0;
       value.setAttribute("role", "button");
       value.setAttribute("aria-label", `Copy ${declaration}`);
@@ -74,7 +91,9 @@
     });
     const prefix = document.createTextNode(" ");
     const newline = document.createTextNode("\n");
-    host.append(prefix, code, toggle, feedback, newline);
+    // A float anchors the control at the pre's right edge on the Input row.
+    // It does not require changing styles on any LeetCode-owned ancestor.
+    host.append(toggle, prefix, code, feedback, newline);
     original.after(host);
     const record = {
       original, host, source: node.textContent, formatted,
@@ -83,5 +102,5 @@
     records.add(record);
     return record;
   }
-  globalThis.LeetCase.view = Object.freeze({ mount, restore, clear, records });
+  globalThis.LeetCase.view = Object.freeze({ mount, restore, clear, records, setAppearance });
 })();

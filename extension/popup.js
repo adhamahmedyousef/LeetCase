@@ -26,3 +26,22 @@ async function checkConnection() {
 
 checkButton.addEventListener("click", checkConnection);
 checkConnection();
+
+const colorModeInput = document.getElementById("color-mode");
+const settingStatus = document.getElementById("setting-status");
+const settings = globalThis.LeetCase.settings;
+settings.ready.then(() => {
+  colorModeInput.checked = settings.colorMode;
+  colorModeInput.disabled = false;
+}).catch(() => { settingStatus.textContent = "Couldn't load settings. Reopen the extension to retry."; });
+settings.subscribe(enabled => { colorModeInput.checked = enabled; });
+colorModeInput.addEventListener("change", async () => {
+  colorModeInput.disabled = true;
+  try {
+    await settings.setColorMode(colorModeInput.checked);
+    settingStatus.textContent = "Saved";
+  } catch {
+    colorModeInput.checked = settings.colorMode;
+    settingStatus.textContent = "Couldn't save. Please try again.";
+  } finally { colorModeInput.disabled = false; }
+});

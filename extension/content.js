@@ -1,10 +1,13 @@
 (() => {
   "use strict";
-  const { core, adapter, view } = globalThis.LeetCase;
+  const { core, adapter, view, settings } = globalThis.LeetCase;
   let snapshot = "";
   let pending;
 
   function reconcile() {
+    const sources = [...view.records].map(record => record.source).concat(adapter.inputNodes().map(node => node.textContent));
+    const parameterNames = sources.flatMap(source => core.parseInput(source)?.map(input => input.name) ?? []);
+    view.setAppearance(settings.colorMode, adapter.editorColors(parameterNames));
     const { language, code } = adapter.editorState();
     const key = JSON.stringify([location.pathname, language]);
     if (key !== snapshot) {
@@ -46,13 +49,15 @@
     });
     if (relevant) schedule();
   });
-  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
   // SPA navigation need not emit popstate. Poll only the pathname, never page data.
   let pathname = location.pathname;
   setInterval(() => {
     if (pathname !== location.pathname) { pathname = location.pathname; schedule(); }
   }, 750);
   addEventListener("popstate", schedule);
+  settings.subscribe(schedule);
+  settings.ready.catch(() => { /* Keep the default uncolored view if storage is unavailable. */ });
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type === "LEETCASE_PING") sendResponse({
       type: "LEETCASE_PONG",

@@ -10,6 +10,6 @@ Do not change LeetCode's original testcase values or execution behavior.
 
 Contributions are licensed under the project's MIT License.
 
-For input-formatting changes, run `node --test tests/core.test.cjs` and verify the
+For input-formatting changes, run `node --test` and verify the
 loaded extension on LeetCode. See [the architecture](docs/architecture.md) for
 the boundaries between parsing, site integration and presentation.

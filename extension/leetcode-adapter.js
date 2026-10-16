@@ -22,5 +22,23 @@
     }
     return nodes;
   }
-  globalThis.LeetCase.adapter = Object.freeze({ editorState, inputNodes, descriptionSelector });
+  function editorColors(parameterNames = []) {
+    const editor = document.getElementById("editor");
+    const light = editor?.querySelector(".monaco-editor.vs:not(.vs-dark)");
+    const colors = light
+      ? { keyword: "#0000ff", type: "#267f99", number: "#098658", variable: "#001080" }
+      : { keyword: "#569cd6", type: "#4ec9b0", number: "#b5cea8", variable: "#9cdcfe" };
+    const sampled = new Set();
+    for (const token of editor?.querySelectorAll(".view-lines .view-line span[class*='mtk']") ?? []) {
+      const text = token.textContent.trim();
+      const kind = /\bint\b/.test(text) ? "keyword" : /\bvector\b/.test(text) ? "type" :
+        /^-?\d+$/.test(text) ? "number" : parameterNames.includes(text) ? "variable" : null;
+      if (kind && !sampled.has(kind)) {
+        colors[kind] = getComputedStyle(token).color;
+        sampled.add(kind);
+      }
+    }
+    return colors;
+  }
+  globalThis.LeetCase.adapter = Object.freeze({ editorState, inputNodes, editorColors, descriptionSelector });
 })();
