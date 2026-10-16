@@ -1,13 +1,15 @@
 # LeetCase
 
-### By [VoidHub ↗](https://voidhub.co)
+### By [VoidHub](https://voidhub.co)
 
 An open-source Chrome extension for displaying and copying LeetCode testcases in
 your editor's language, while preserving the original test data. C++ first, then
 Python and JavaScript.
 
-**Early preview:** the current version checks the connection to a problem page.
-Testcase formatting and copying are coming next. Independent of LeetCode; not
+**Early preview:** C++ `int` and `vector<int>` inputs in description examples,
+with native-looking text and an Original toggle. Double-click a declaration to copy it.
+Other types stay unchanged.
+Independent of LeetCode; not
 affiliated with or endorsed by it.
 
 ## Install

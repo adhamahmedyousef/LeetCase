@@ -1,0 +1,33 @@
+[data-leetcase-original][hidden], [data-leetcase-view] [hidden] { display: none !important; }
+/* Plain spans inherit the original pre's typography; no card, code background or box. */
+[data-leetcase-view], [data-leetcase-view] .leetcase-code,
+[data-leetcase-view] .leetcase-declaration {
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  white-space: inherit;
+}
+[data-leetcase-view] .leetcase-declaration { cursor: copy; }
+[data-leetcase-view] .leetcase-original-toggle {
+  appearance: none;
+  margin-inline: 8px 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+[data-leetcase-view] .leetcase-original-toggle[aria-pressed="true"] { font-weight: bold; }
+[data-leetcase-view] .leetcase-feedback { margin-inline-start: 8px; color: inherit; font: inherit; }
+[data-leetcase-view] .leetcase-feedback:empty { display: none; }
+[data-leetcase-view] :is(.leetcase-declaration, .leetcase-original-toggle):focus-visible {
+  outline: 2px solid #538fee;
+  outline-offset: 2px;
+}

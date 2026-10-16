@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<base href="/tests/">
+<title>LeetCase input integration fixture</title>
+<link rel="stylesheet" href="../extension/input-view.css">
+<style>body { font: 16px/1.6 system-ui; padding: 24px; } pre { white-space: pre-wrap; font-size: 14px; } .view-lines { white-space: pre; }</style>
+<h1>Two Sum — integration fixture</h1>
+<div id="editor">
+  <button aria-haspopup="dialog" id="language">C++</button>
+  <div class="view-lines"><div class="view-line">vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) { }</div></div>
+</div>
+<button id="switch">Switch language</button>
+<button id="navigate">Simulate next problem</button>
+<button id="new-example">Simulate example rerender</button>
+<div data-track-load="description_content">
+<p>Example 1:</p>
+<pre><strong>Input:</strong> nums = [2,7,11,15], target = 9
+<strong>Output:</strong> [0,1]
+<strong>Explanation:</strong> Because nums[0] + nums[1] == 9, we return [0, 1].
+</pre>
+<p>Example 2:</p>
+<pre><strong>Input:</strong> nums = [3,2,4], target = 6
+<strong>Output:</strong> [1,2]
+</pre>
+</div>
+<label>Runnable test data <textarea id="runnable">[2,7,11,15]
+9</textarea></label>
+<script src="fixture.js"></script>
+<script src="../extension/core.js"></script>
+<script src="../extension/leetcode-adapter.js"></script>
+<script src="../extension/input-view.js"></script>
+<script src="../extension/content.js"></script>
+</html>

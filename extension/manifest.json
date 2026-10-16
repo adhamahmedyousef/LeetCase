@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LeetCase",
-  "version": "0.1.0",
-  "description": "An open-source testcase display helper by VoidHub. Early preview: connection check only. Independent of LeetCode.",
+  "version": "0.2.0",
+  "description": "C++ input example formatting and copying, by VoidHub. Early preview for int and vector<int>. Independent of LeetCode.",
   "action": {
     "default_title": "LeetCase",
     "default_popup": "popup.html"
@@ -10,7 +10,8 @@
   "content_scripts": [
     {
       "matches": ["https://leetcode.com/problems/*", "https://www.leetcode.com/problems/*"],
-      "js": ["content.js"],
+      "js": ["core.js", "leetcode-adapter.js", "input-view.js", "content.js"],
+      "css": ["input-view.css"],
       "run_at": "document_idle"
     }
   ]

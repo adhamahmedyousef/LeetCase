@@ -9,3 +9,7 @@ include reproduction and verification steps, and avoid unrelated changes.
 Do not change LeetCode's original testcase values or execution behavior.
 
 Contributions are licensed under the project's MIT License.
+
+For input-formatting changes, run `node --test tests/core.test.cjs` and verify the
+loaded extension on LeetCode. See [the architecture](docs/architecture.md) for
+the boundaries between parsing, site integration and presentation.
