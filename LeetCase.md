@@ -259,11 +259,16 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   the separate icon-generation prompt, and the unused VoidHub reference crop.
   Kept architecture docs, tests, contributing guide, MIT license, and this
   project handoff because they directly support development, use, or review.
-- Removed the outdated “Early preview” wording from the README. The GitHub About
-  description must be updated to remove the same wording.
-- Release assessment: version 0.4.1 is suitable as the first GitHub Release. It
-  adds the final user-provided logo, keeps the existing tested C++ behavior, and
-  has no existing releases or tags. Release asset should contain only the files
-  inside `extension/` at the ZIP root, ready for **Load unpacked** after extract.
-- Before publishing: run the current automated and native C++ checks, verify the
-  extension-only ZIP, then create tag `v0.4.1` and a non-prerelease GitHub Release.
+- Removed the outdated preview wording from the README and GitHub About
+  description. The About description now says: “Open-source Chrome extension
+  that formats and copies LeetCode testcases for C++ by VoidHub.”
+- Published the first GitHub Release, `v0.4.1`, at
+  https://github.com/adhamahmedyousef/LeetCase/releases/tag/v0.4.1.
+  This regular release adds the final user-provided logo and keeps the tested
+  C++ behavior. It attaches `leetcase-0.4.1.zip`, containing only files from
+  `extension/` at the archive root, ready for **Load unpacked** after extraction.
+- Release asset SHA-256:
+  `3c8cb0a9c97c3c0ea03e3d196a6d3fc20b060da67edfd9e6f4ec308683e42d45`.
+- Verified before publication: 19 Node tests; native C++ compilation of 168
+  generated declarations and 404 independent value assertions; ZIP root and
+  manifest version 0.4.1.
