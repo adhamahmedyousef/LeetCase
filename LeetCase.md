@@ -347,7 +347,7 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   chrome://extensions, Refresh the problem and select Java. No push/release in this
   stage; retain the existing 0.4.2 work and await user review before publishing.
 
-## 0.5.0 release preparation: Java and Python colors (2026-10-18)
+## 0.5.0 published: Java and Python colors (2026-10-18)
 
 - User confirmed Java works on live LeetCode and explicitly authorized Push and
   a new Release. This supersedes the earlier local-only publication hold.
@@ -377,7 +377,20 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
 - `python scripts/package_release.py` creates a deterministic ZIP from current
   extension source plus LICENSE, verifies all manifest references and version,
   permissions, archive-root layout, exact file bytes and absence of test/docs.
-- Release publication status and ZIP checksum will be recorded after success.
+- Published release: https://github.com/adhamahmedyousef/LeetCase/releases/tag/v0.5.0
+  (regular release, not a draft/prerelease). Source commit and remote tag:
+  `194f43cbbe2ab36f8b0204e95b78b2d1678491a1`.
+- Asset: `leetcase-0.5.0.zip`, 146,380 bytes, 14 files at archive root/relative
+  icon paths, including MIT LICENSE. SHA-256:
+  `38bd5aef2a83dcbc6a5f529da22dbcc066ad83093db8d14b3b3cee96d7888710`.
+- Verified GitHub's uploaded asset size/digest/state, release publication and
+  remote main/tag SHA. Downloaded the public versioned ZIP link independently;
+  its hash, archive integrity and manifest 0.5.0 matched the tested local package.
+- Popup preview verified both switches save independently and survive reopening;
+  About correctly distinguishes C++/Java formatting from Python colors only.
+- Manual update: replace installed extension files, Reload in chrome://extensions,
+  then Refresh LeetCode. New Python behavior still awaits user confirmation on
+  the actual site after that update; local fixtures are not live-site evidence.
 
 ## Repository cleanup and release
 
