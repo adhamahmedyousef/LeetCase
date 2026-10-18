@@ -24,6 +24,7 @@ add('vector<vector<double>>', [[1.25, 0.1], [], [1e-100]]);
 add('vector<long long>', [9007199254740993n, -9223372036854775808n], '[9007199254740993,-9223372036854775808]');
 add('vector<vector<string>>', [[], ['a\0', 'b']]);
 add('vector<int>', []);
+require('./value-corpus.cjs')(add, false);
 let assertions = 0;
 function expected(type, value, expression) {
   const checks = [];
@@ -56,8 +57,8 @@ const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'leetcase-cpp-'));
 try {
   const sourcePath = path.join(directory, 'verify.cpp');
   const executable = path.join(directory, process.platform === 'win32' ? 'verify.exe' : 'verify');
-  fs.writeFileSync(sourcePath, '#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n' + blocks.join('\n') + '\n}\n');
-  const build = spawnSync('g++', ['-std=c++20', '-pedantic-errors', '-O2', sourcePath, '-o', executable], { encoding: 'utf8', timeout: 60000 });
+  fs.writeFileSync(sourcePath, '#include <vector>\n#include <string>\n#include <bit>\n#include <cstdint>\n#include <cassert>\nusing namespace std;\nint main() {\n' + blocks.join('\n') + '\n}\n');
+  const build = spawnSync('g++', ['-std=c++20', '-pedantic-errors', '-O0', sourcePath, '-o', executable], { encoding: 'utf8', timeout: 60000 });
   assert.equal(build.status, 0, build.stderr || build.error?.message);
   const run = spawnSync(executable, [], { encoding: 'utf8', timeout: 10000 });
   assert.equal(run.status, 0, run.stderr || run.error?.message);

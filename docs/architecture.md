@@ -5,7 +5,7 @@ problem description. It never writes to the solution editor, runnable testcase
 editor, React state, network requests, Output, or Explanation.
 
 ```text
-LeetCode DOM → adapter → input assignments + editor signature → C++ formatter
+LeetCode DOM → adapter → input assignments + editor signature → C++ / Java formatter
                         ↓ validated result only
                     input view ← controller (language / route / DOM changes)
 ```
@@ -14,9 +14,10 @@ LeetCode DOM → adapter → input assignments + editor signature → C++ format
 
 | File | Responsibility |
 | --- | --- |
-| `core.js` | Pure assignment parser, bounded C++ parameter reader, type-checked formatter |
+| `core.js` | Shared assignment parser, bounded C++ reader/formatter, language dispatch and signature masking |
+| `java.js` | Bounded Java method reader, typed Java literals, arrays and mutable lists |
 | `highlight.js` | Lossless syntax tokens for the supported generated declarations |
-| `settings.js` | Local Color Mode preference shared by popup and content scripts |
+| `settings.js` | Local enabled and Color Mode preferences shared by popup and content scripts |
 | `leetcode-adapter.js` | All site-specific selectors; reads rendered language/code and exact input text nodes |
 | `input-view.js` | Reversible input-only presentation, local toggle, data-only clipboard action |
 | `input-view.css` | Styles scoped exclusively to extension-owned nodes |
@@ -51,6 +52,22 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
   these limits preserve the original.
 - Read only the rendered Monaco lines. If the signature is not in those lines,
   preserve original examples. Full editor-model integration is deliberately deferred.
+- Java is selected only for the exact editor label `Java`. Its reader accepts
+  methods with a return type and body, optional access/static/final modifiers,
+  multiline parameters, `final` parameters, brackets before/after names and a
+  bounded `throws` clause. Bind by exact input names and reject ambiguity.
+  Constructors, annotations, varargs, wildcard/generic type variables and unknown
+  structures are outside this bounded reader. Comments and string/character
+  contents are masked before matching signatures in both languages.
+- Java supports primitive numeric/boolean/UTF-16 char types, String, boxed
+  primitives, arrays and nested `List<T>` with supported reference-type arguments.
+  Emit fully qualified `java.util.List`, mutable `ArrayList` and explicit typed
+  `Arrays.asList` for list values, requiring no imports. Generic arrays fail closed.
+  Reference nulls are supported; primitive nulls and TreeNode/ListNode are rejected.
+  Java literal escaping uses fixed-width octal controls and UTF-16 surrogate escapes;
+  decimal long literals receive L, float literals receive f. No C++ string/NUL
+  constructor is reused for Java. Java char accepts one UTF-16 unit, including
+  non-ASCII; supplementary characters require Strings, not a single char.
 - Support observed legacy `pre > strong Input:` + text + `strong Output:` and
   modern `.example-block` paragraphs with a plain `span.example-io` and separate
   Output paragraph. Unknown markup/prose fails closed. The modern view preserves
@@ -72,6 +89,10 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
 - Language/route changes invalidate previous views; code edits only rebuild a
   view if its signature-derived declarations change. Unsupported languages
   restore the original input. No reload or whole-page replacement is used.
+- The popup's Input formatting switch stores `leetcaseEnabled` locally and updates
+  existing tabs through `chrome.storage.onChanged`. Turning it off restores every
+  original input node and stops formatting. Turning it back on schedules normal
+  reconciliation. It defaults on to preserve the prior behavior after update.
 - Controls and styles live entirely inside the Input region. No runtime data is
   modified. Text can occupy more vertical space because declarations wrap.
 - Original is a small button floated to the right of the Input row, without
@@ -88,6 +109,14 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
 
 ## Verification
 
+Python/Python3 uses a color-only path when both Input formatting and Color Mode
+are enabled. Core returns the exact source text without parsing/reformatting or
+reading a signature; the view tokenizes it in one span, preserves whitespace and
+typography, and adds no declarations, buttons or copy behavior. Turning either
+setting off restores the original input node. JSON-style true/false/null spellings
+remain unchanged: this is not an executable-Python converter. JavaScript stays
+unsupported. Color-only inputs retain the 200,000-code-unit limit.
+
 Run `node --test`. Use `tests/fixture.html` through a local
 HTTP server for DOM checks. The fixture reuses the live observed example markup
 and the actual extension scripts; its Chrome storage/connection shim is test-only.
@@ -98,13 +127,19 @@ require a loaded unpacked extension on LeetCode.
 and checks values independently, including IEEE bit patterns and UTF-8 bytes.
 It requires g++ on PATH and creates/removes its own verified temporary directory.
 
+`node tests/java-roundtrip.cjs` compiles declarations with javac and executes
+independent checks for UTF-16 units, numeric bounds/IEEE bits, array shape and
+mutable typed lists, without imports. Requires a JDK on PATH.
+`/tests/controller-regressions.html` exercises C++/Java/unsupported language
+switches, code edits, SPA navigation, rerenders, Original and both preferences.
+
 Next adapters/formatters must preserve these boundaries. TreeNode/ListNode
-builders, Python and JavaScript remain separate future work. The root
+builders, executable Python declarations and JavaScript remain separate future work. The root
 `LeetCase.md` holds the user requirements, current verification and backlog.
 
 Browser layout regressions: `/tests/dom-regressions.html` covers both observed
 layouts, two arrays and exact original/Output/Explanation restoration.
 
 Popup 0.4.0 intentionally removes connection status and active-tab queries.
-C++ scope is explained in About. Color Mode uses the same shared settings module
+C++ and Java scope is explained in About. Color Mode uses the same shared settings module
 and drives a static illustrative preview, never the user's editor content.

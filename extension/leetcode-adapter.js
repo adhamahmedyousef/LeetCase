@@ -44,8 +44,8 @@
     const sampled = new Set();
     for (const token of editor?.querySelectorAll(".view-lines .view-line span[class*='mtk']") ?? []) {
       const text = token.textContent.trim();
-      const kind = /^["']/.test(text) ? "string" : /\b(int|long|double|float|bool|char|true|false)\b/.test(text) ? "keyword" : /\b(vector|string)\b/.test(text) ? "type" :
-        /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?(?:LL|f)?$/i.test(text) ? "number" : parameterNames.includes(text) ? "variable" : null;
+      const kind = /^["']/.test(text) ? "string" : /\b(byte|short|int|long|double|float|bool|boolean|char|true|false|null|new|True|False|None)\b/.test(text) ? "keyword" : /\b(vector|string|String|Byte|Short|Integer|Long|Float|Double|Boolean|Character|List|ArrayList|Arrays)\b/.test(text) ? "type" :
+        /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?(?:LL|L|f)?$/i.test(text) ? "number" : parameterNames.includes(text) ? "variable" : null;
       if (kind && !sampled.has(kind)) {
         colors[kind] = getComputedStyle(token).color;
         sampled.add(kind);

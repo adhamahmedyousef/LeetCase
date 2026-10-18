@@ -1,6 +1,6 @@
 # LeetCase
 
-Project handoff and decision record. Updated 2026-10-16, Africa/Cairo.
+Project handoff and decision record. Updated 2026-10-18, Africa/Cairo.
 Read this file before continuing work; update it when behavior or status changes.
 
 ## Identity and scope
@@ -23,17 +23,19 @@ the user's next stage. Do not build the entire roadmap in one pass.
 GitHub push was explicitly authorized in this conversation; do not create another
 repository, publish a store listing or deploy unrelated services without a request.
 
-The current request applies the approved popup design C without a Connected row. The user says
-the existing extension works well. The user selected the Code first popup direction. Python and JavaScript come later.
+The popup uses the approved Code first direction without a Connected row. The
+user selected the compact D status strip for the new Input formatting switch.
+Python currently colors original Input text only. Executable Python declarations
+and JavaScript support remain future work.
 
-## Current behavior (source version 0.4.1)
+## Current behavior (source version 0.5.0)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
 - Only the example data immediately after **Input:** in the description changes.
   Output, Explanation, the statement, solution code and runnable testcases stay intact.
 - Uses the selected editor language and parameter names/types from the visible
-  C++ function declaration. Tracks language changes, SPA navigation and rerenders.
+  C++ or Java method declaration. Tracks language changes, SPA navigation and rerenders.
 - Unsupported languages/types/layouts restore or preserve the original example.
 - Input uses the original font and plain text layout, without a card/background.
 - **Original** is a small button on the right of the Input row, as requested in
@@ -43,10 +45,18 @@ the existing extension works well. The user selected the Code first popup direct
 - Successful clipboard writes show **Copied**. Copy errors show retry feedback.
   The copied text contains only the declaration, without credits or page footer.
 - Popup uses the approved dark Code first design: By VoidHub link, LeetCase title,
-  the user's supplied LS logo, illustrative code preview, Color Mode, About,
+  the user's supplied LS logo, Input formatting and Color Mode switches, About,
   GitHub and copyright. The user explicitly removed the entire Connected row.
+- Input formatting defaults on for existing installs. Turning it off restores
+  the original LeetCode inputs in open tabs and prevents further formatting;
+  turning it on reconciles current examples. The choice persists in
+  `chrome.storage.local` under `leetcaseEnabled` and follows the user across tabs.
 - **Color Mode** defaults off, updates open tabs and persists across browser
   restarts through `chrome.storage.local`, key `leetcaseColorMode`.
+- Python/Python3 receives colors only when both Input formatting and Color Mode
+  are enabled. Exact original text/whitespace is preserved, without declarations,
+  Original/copy buttons or executable-Python conversion. Turning either switch
+  off restores the exact original input node. JavaScript remains unsupported.
 - Colors use visible Monaco token colors when available; missing categories
   use a VS-style light/dark palette. Custom themes may use fallback colors.
 - Only declared API permission: `storage`. No analytics, external requests,
@@ -78,13 +88,14 @@ Unsupported input rejects the whole example instead of producing a partial conve
 | --- | --- |
 | `extension/manifest.json` | Chrome entrypoints, version, match patterns and storage permission |
 | `extension/core.js` | Literal parser, parameter reader, recursive typed C++ formatter |
+| `extension/java.js` | Java method signatures, Java literals, arrays and mutable typed lists |
 | `extension/highlight.js` | Lossless tokens for generated C++ declarations |
-| `extension/settings.js` | Shared persistent Color Mode preference and live notifications |
+| `extension/settings.js` | Shared persistent enabled and Color Mode preferences with live notifications |
 | `extension/leetcode-adapter.js` | Site selectors, visible code/language and Monaco palette reading |
 | `extension/input-view.js` | Reversible Input-only rendering, Original and double-click copy |
 | `extension/input-view.css` | Styles scoped to extension-owned nodes |
 | `extension/content.js` | Filtered/debounced observation and reconciliation |
-| `extension/popup.*` | Popup presentation, connection check and settings control |
+| `extension/popup.*` | Popup presentation, persistent controls and links |
 | `tests/*.test.cjs` | Parser/formatter, highlight and settings tests |
 | `tests/cpp-roundtrip.cjs` | Native C++20 compilation and independent value assertions |
 | `tests/fixture.*` | Local DOM integration fixture, including expanded-input button |
@@ -116,7 +127,8 @@ unwrapped on cleanup. Use `textContent` for rendering, never raw input as HTML.
 - Storage tests cover persistence across fresh contexts, open-tab notifications,
   failed writes and a setting change during the initial asynchronous read.
 
-Commands: `node --test` and `node tests/cpp-roundtrip.cjs` (g++ on PATH).
+Commands: `node --test`, `node tests/cpp-roundtrip.cjs` (g++ on PATH), and
+`node tests/java-roundtrip.cjs` (JDK on PATH).
 For fixture testing, run `python -m http.server 8765 --bind 127.0.0.1` in the project
 and open `http://127.0.0.1:8765/tests/fixture.html`. The fixture's Chrome/storage
 shim is test-only and is not part of the shipped extension.
@@ -130,7 +142,8 @@ shim is test-only and is not part of the shipped extension.
    containing a plain `span.example-io`. Add other layouts only after observing them.
 3. **TreeNode and ListNode remain unsupported.** Design explicit builders with
    LeetCode's serialization rules; never reinterpret their input arrays as vectors.
-4. Python then JavaScript formatters and language-specific function signatures.
+4. Python executable declarations (beyond colors) and JavaScript support remain
+   future work; Python colors-only now ships in 0.5.0.
 5. Bounded C++ signature reader is not a full parser. If the declaration is outside
    Monaco's rendered viewport, missing, overloaded/ambiguous or unsupported,
    preserve original input. Full model integration needs a separate design decision.
@@ -252,6 +265,119 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   Connected is absent. Real Chrome extension Reload is still required to see
   the new toolbar icon and popup in the installed unpacked extension.
 - Included the logo in the versioned 0.4.1 ZIP for local installation.
+
+## 0.4.2: persistent Input formatting switch (local, not released)
+
+- The user selected design D from four popup options: a compact teal-rail status
+  strip immediately above the code preview. The Color Mode switch remains separate.
+- Added a persistent Input formatting switch. It defaults on, saves to
+  `chrome.storage.local`, and updates already-open LeetCode tabs. Off restores
+  original Input nodes; on resumes formatting for supported C++ examples.
+- Popup shows the current On/Off state and saved/error feedback. Version is
+  bumped to 0.4.2. The popup preview shim supplies the backward-compatible default.
+- Updated the public README and architecture notes. The actual Chrome extension
+  needs Reload plus a LeetCode page Refresh for the user to try the switch.
+- This local change has not been tested in Chrome or published. Do not push or
+  create a release until the user reviews the behavior.
+
+## 0.5.0: C++ audit and Java support (initial local implementation)
+
+- User requested a C++ gap review followed by Java using the selected editor
+  language and the actual Java method signature, preserving the existing UX.
+- Audited C++ support: recursive vectors (including multiple arrays and empty/ragged
+  rows), strings/escaping, ASCII chars, bool, int/long long and finite float/double
+  are already supported. Native C++20 regression still passes 168 declarations
+  and 404 independent assertions. This does not mean all C++ types are supported.
+- C++ gaps remain: TreeNode/ListNode builders; maps/sets/pairs/custom structures;
+  pointers/C arrays; unsigned/platform-dependent long/size_t and non-ASCII char.
+  The signature reader is bounded, is not a full C++ parser, and depends on
+  rendered Monaco lines. Unknown DOM layouts and design/operation problems remain
+  original. These are recorded backlog, not features silently added in this stage.
+- Fixed a shared signature-reading issue: comments and quoted string/char contents
+  (including C++ raw strings and Java text blocks) are masked before matching,
+  so a signature-looking string does not authorize a conversion.
+- Inspected the actual Java template on LeetCode Two Sum in a separate Chrome tab:
+  `class Solution { public int[] twoSum(int[] nums, int target) { } }`.
+  Consulted Java Language Specification chapters 3, 8 and 10 for method/array
+  syntax, literals, UTF-16 chars and escaping:
+  https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+  https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+  https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html
+- Added pure `extension/java.js`, loaded after core in the MV3 manifest. Shared
+  core dispatch selects C++ or Java; controller/view retain Input-only rendering,
+  original node identity, double-click/keyboard copy, Original and both persistent
+  preferences. Original's tooltip uses the current language, not hardcoded C++.
+- Java signatures: optional public/private/protected/static/final modifiers,
+  multiline parameters, final parameter modifier, brackets before/after parameter
+  names, bounded throws clauses. Bind by exact name, even in reversed input order;
+  missing/ambiguous/unsupported signatures preserve the original example.
+- Java values: byte/short/int/long (checked bounds and long L suffix), float/double
+  (finite values, binary32 rounding, signed zero), boolean, String, one UTF-16-unit
+  char, boxed primitives, recursive arrays and typed List<T> of supported reference
+  types. Empty/ragged arrays and multiple inputs are supported. Reference nulls
+  work; primitive nulls fail. Strings preserve controls, NUL, quotes, backslashes,
+  Unicode and surrogate units. Supplementary characters use String, not one char.
+- Typed lists use fully qualified mutable ArrayList/Arrays constructors, including
+  nested lists and array elements, so no import is required. A null list element
+  is explicitly cast to its element type to avoid Java varargs interpreting a
+  single null as the entire argument array. Generic arrays remain unsupported.
+- TreeNode, ListNode, Node, maps, wildcard/type-variable generics, annotations,
+  varargs and custom constructors are not supported in Java. No node array is
+  reinterpreted as a normal array. Python and JavaScript remain future stages.
+- Extended syntax colors and Monaco palette sampling to Java primitive/boxed
+  types, String, lists, new/null and L literals. Popup About and concise README
+  now mention both languages. Popup's illustrative preview remains C++.
+- Corrected an existing settings-test mock after the prior enabled-switch change:
+  initial loading reads two keys, so both pending reads must resolve. Added a
+  persistence/tab-notification check showing enabled changes preserve Color Mode.
+- Verification on 2026-10-18: 28 Node tests; 193 generated Java declarations
+  compiled with javac 25 (`-Xlint:all -Werror`) and executed with 452 independent
+  assertions; 168 C++20 declarations / 404 assertions; JS syntax and diff checks.
+- Local Chrome: 33 DOM/typography checks and 14 controller lifecycle checks pass.
+  Covers C++ ↔ Java, unsupported languages/types, Original, Color Mode, enable/off,
+  SPA routes and example replacement, unchanged Output and runnable input.
+  Manual fixture checks confirmed Java syntax colors and clipboard output:
+  `String[] words = {"hello", "world"};` via keyboard, and
+  `long total = 9007199254740993L;` via double-click, with Copied feedback.
+- Browser fixture URLs: `/tests/dom-regressions.html`,
+  `/tests/controller-regressions.html`, `/tests/fixture.html` (Java input types).
+  Java native check: `node tests/java-roundtrip.cjs` (JDK on PATH).
+- Live LeetCode check confirmed its Java signature only. Updated extension
+  injection has not been verified on the live site; user must Reload LeetCase in
+  chrome://extensions, Refresh the problem and select Java. No push/release in this
+  stage; retain the existing 0.4.2 work and await user review before publishing.
+
+## 0.5.0 release preparation: Java and Python colors (2026-10-18)
+
+- User confirmed Java works on live LeetCode and explicitly authorized Push and
+  a new Release. This supersedes the earlier local-only publication hold.
+- Added Python/Python3 color-only rendering: preserve the exact original text,
+  whitespace and typography; no signature needed, value conversion, declarations,
+  extra controls or clipboard override. JSON true/false/null remain unchanged.
+  Color Mode and the master switch both control this view, retaining preferences.
+- README, popup About, manifest description and architecture explain C++/Java
+  declarations versus Python colors only. Version 0.5.0. No permission expansion.
+- Expanded deterministic native-value corpus: matrices, ragged/empty vectors and
+  arrays, Unicode/control/NUL strings, 64-bit integers and mutable nested Java
+  lists. Native assertions independently check content, sizes, bits and mutability.
+- Current verification passed: 34 Node tests, including 600 lossless lexer cases
+  and 200 generated parameter-name/order combinations for both C++ and Java;
+  593 Java declarations / 4,292 assertions; 568 C++20 declarations / 4,171
+  assertions; 61 local Chrome layout checks and 21 lifecycle checks.
+- C++'s expanded generated program exceeded the old 60-second compilation budget
+  with -O2. Narrowed its includes and used -O0 for this literal/value verification;
+  compilation and all runtime assertions passed. This is not a performance claim.
+  Java checks use javac -Xlint:all -Werror, chunked methods to respect JVM limits.
+- New regression coverage checks malformed inputs, bounds/depth, comments/quoted
+  fake signatures, reference nulls, controls/escaping, typography/node identity,
+  Python no-op text preservation, Color Mode/master switch toggles, language and
+  route changes, rerenders, and unchanged Output/Explanation/runnable data.
+- Live Java works per the user's confirmation. New Python coloring is verified
+  in local Chrome fixtures; no claim of a live-site Python reload test yet.
+- `python scripts/package_release.py` creates a deterministic ZIP from current
+  extension source plus LICENSE, verifies all manifest references and version,
+  permissions, archive-root layout, exact file bytes and absence of test/docs.
+- Release publication status and ZIP checksum will be recorded after success.
 
 ## Repository cleanup and release
 

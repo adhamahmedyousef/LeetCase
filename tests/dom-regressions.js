@@ -15,12 +15,11 @@
     // All markup here is static test data, never page/user content.
     cases.innerHTML = html;
   }
-  function mount(code) {
+  function mount(code, language = 'C++') {
     for (const node of adapter.inputNodes()) {
-      const input = core.parseInput(node.textContent);
-      const formatted = core.formatCpp(input, core.parametersFor(code, input));
+      const formatted = core.format(language, node.textContent, code);
       check(formatted !== null, 'example values match the real function signature');
-      view.mount(node, formatted);
+      view.mount(node, formatted, language);
     }
   }
   try {
@@ -71,6 +70,31 @@
     check(adapter.inputNodes().length === 0, 'unrelated prose is not consumed as input');
     fixture('<div class="example-block"><p><strong>Input:</strong> <span class="example-io">nums1 = [1,3], nums2 = [2]</span></p><p><strong>Output:</strong> <span class="example-io">2.00000</span></p></div>');
     mount('double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {}');
+    fixture('<div class="example-block"><p><strong>Input:</strong> <span class="example-io">words = ["hello","world"], grid = [[1],[]]</span></p><p><strong>Output:</strong> unchanged</p></div>');
+    const javaOriginal = adapter.inputNodes()[0];
+    mount('class Solution { public void f(String[] words, int[][] grid) {} }', 'Java');
+    check(cases.querySelector('.leetcase-declaration').textContent === 'String[] words = {"hello", "world"};', 'Java string array renders in the original Input typography');
+    check(cases.querySelectorAll('.leetcase-declaration')[1].textContent === 'int[][] grid = {{1}, {}};', 'Java nested arrays preserve empty rows');
+    cases.querySelector('.leetcase-original-toggle').click();
+    check(cases.querySelector('.leetcase-original-toggle').title === 'Show Java format' && !javaOriginal.parentElement.hidden, 'Java Original restores exact data and names the correct language');
+    view.clear();
+    check(adapter.inputNodes()[0] === javaOriginal, 'Java cleanup preserves original node identity');
+    for (const language of ['Python','Python3']) for (const modern of [false,true]) {
+      fixture(modern ? '<div class="example-block"><p><strong>Input:</strong> <span class="example-io" style="font: 500 17px/26px monospace;letter-spacing:.4px">root = [1,null,2], s = &quot;a\\n&quot;, flag = true</span></p><p><strong>Output:</strong> unchanged</p></div>' : '<pre><strong>Input:</strong> root = [1,null,2], s = "a\\n", flag = true\n<strong>Output:</strong> unchanged</pre>');
+      const node = adapter.inputNodes()[0], source = node.textContent;
+      const font = getComputedStyle(modern ? node : node.parentElement).fontFamily;
+      const whitespace = getComputedStyle(modern ? node : node.parentElement).whiteSpace;
+      view.setAppearance(true,{keyword:'#569cd6',string:'#ce9178',number:'#b5cea8',variable:'#9cdcfe'});
+      mount('',language);
+      const host = cases.querySelector('[data-leetcase-view]');
+      check(host.textContent === source, `${language} preserves exact input text in ${modern?'paragraph':'legacy'} layout`);
+      check(!host.querySelector('button,[role="button"],.leetcase-declaration'), `${language} adds no conversion/copy controls`);
+      check(getComputedStyle(host).fontFamily === font && [...host.querySelectorAll('.leetcase-code > span')].every(span=>getComputedStyle(span).fontFamily===font), `${language} retains original typography`);
+      check(host.dataset.leetcaseColorMode === 'true' && !!host.querySelector('.leetcase-token-string'), `${language} colors original tokens`);
+      check(getComputedStyle(host.querySelector('.leetcase-code')).whiteSpace===whitespace, `${language} retains original whitespace layout`);
+      view.clear();
+      check(adapter.inputNodes()[0]===node, `${language} cleanup restores exact original node`);
+    }
     document.getElementById('result').textContent = `PASS: ${passed} layout checks`;
     document.getElementById('result').dataset.result = 'pass';
   } catch (error) {

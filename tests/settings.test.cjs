@@ -49,11 +49,28 @@ test('changes reach open tabs once, and a failed save retains previous state', a
 });
 test('a change during initial loading wins over the older storage snapshot', async () => {
   const env = environment();
-  let resolve;
-  env.chrome.storage.local.get = () => new Promise(done => { resolve = done; });
+  const reads = new Map();
+  env.chrome.storage.local.get = key => new Promise(done => { reads.set(key, done); });
   const settings = env.open();
   await env.chrome.storage.local.set({ leetcaseColorMode: true });
-  resolve({ leetcaseColorMode: false });
+  reads.get('leetcaseColorMode')({ leetcaseColorMode: false });
+  reads.get('leetcaseEnabled')({ leetcaseEnabled: true });
   await settings.ready;
   assert.equal(settings.colorMode, true);
+});
+
+test('Input formatting persists, notifies tabs and leaves Color Mode intact', async () => {
+  const env = environment({ leetcaseColorMode: true });
+  const first = env.open(), second = env.open();
+  await Promise.all([first.ready, second.ready]);
+  const received = [];
+  second.subscribeEnabled(value => received.push(value));
+  assert.equal(first.enabled, true);
+  await first.setEnabled(false);
+  const reopened = env.open(); await reopened.ready;
+  assert.equal(reopened.enabled, false);
+  assert.equal(reopened.colorMode, true);
+  assert.deepEqual(received, [false]);
+  await reopened.setEnabled(true);
+  assert.equal(first.enabled, true);
 });

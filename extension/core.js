@@ -72,9 +72,14 @@
     } catch { return null; }
   }
 
+  function signatureText(code) {
+    // Hide comments and literal contents before looking for declarations.
+    // A signature-looking string must never be mistaken for a real method.
+    return code.replace(/R"([^\s()\\]{0,16})\([\s\S]*?\)\1"|"""[\s\S]*?"""|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, match => match.replace(/[^\n]/g, " "));
+  }
   function parametersFor(code, inputs) {
     // Deliberately bounded declaration reader, not a general C++ parser.
-    const clean = code.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+    const clean = signatureText(code);
     const candidates = [];
     for (const match of clean.matchAll(/\b([A-Za-z_]\w*)\s*\(([^(){}]*)\)\s*(?:const\s*)?\{/g)) {
       const params = match[2].split(",").map(part => {
@@ -166,5 +171,15 @@
     }
     return lines.join("\n");
   }
-  globalThis.LeetCase = { core: Object.freeze({ parseInput, parametersFor, formatCpp }) };
+  function format(language, source, code) {
+    // Python is presentation-only: preserve LeetCode's exact text, including
+    // true/false/null spellings. Never claim these examples are executable Python.
+    if (language === "Python" || language === "Python3") return typeof source === "string" && source.length <= 200000 && source.trim() ? source : null;
+    const inputs = parseInput(source);
+    if (!inputs) return null;
+    if (language === "C++") return formatCpp(inputs, parametersFor(code, inputs));
+    if (language === "Java") return globalThis.LeetCase.java.format(inputs, globalThis.LeetCase.java.parametersFor(code, inputs));
+    return null;
+  }
+  globalThis.LeetCase = { core: Object.freeze({ parseInput, parametersFor, formatCpp, signatureText, format }) };
 })();

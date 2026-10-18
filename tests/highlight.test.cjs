@@ -3,6 +3,15 @@ const assert = require('node:assert/strict');
 require('../extension/core.js');
 require('../extension/highlight.js');
 const { tokenize } = globalThis.LeetCase.highlight;
+
+test('Java syntax colors preserve arrays, Strings, lists, nulls and long suffixes', () => {
+  for (const code of ['String[] words = {"hi", null};', 'long n = -9223372036854775808L;', 'java.util.List<Integer> xs = new java.util.ArrayList<Integer>();']) {
+    assert.equal(tokenize(code).map(token => token.text).join(''), code);
+  }
+  assert.equal(tokenize('boolean')[0].kind, 'keyword');
+  assert.equal(tokenize('String')[0].kind, 'type');
+  assert.equal(tokenize('1L')[0].text, '1L');
+});
 test('syntax tokens preserve every character including negative values and empty arrays', () => {
   for (const code of ['vector<int> nums = {2, 7, -11, 15};', 'int target = -9;', 'vector<int> values = {};']) {
     assert.equal(tokenize(code).map(token => token.text).join(''), code);

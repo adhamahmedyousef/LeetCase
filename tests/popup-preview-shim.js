@@ -3,7 +3,10 @@ const popupPreviewListeners = new Set();
 globalThis.chrome = { storage: {
   onChanged: { addListener: callback => popupPreviewListeners.add(callback) },
   local: {
-    async get(key) { return { [key]: JSON.parse(localStorage.getItem(`leetcasePopupPreview:${key}`) ?? 'false') }; },
+    async get(key) {
+      const stored = localStorage.getItem(`leetcasePopupPreview:${key}`);
+      return { [key]: stored === null ? key === 'leetcaseEnabled' : JSON.parse(stored) };
+    },
     async set(values) {
       for (const [key, value] of Object.entries(values)) {
         localStorage.setItem(`leetcasePopupPreview:${key}`, JSON.stringify(value));

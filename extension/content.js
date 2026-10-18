@@ -20,10 +20,14 @@
         break;
       }
     }
-    if (language !== "C++" || !/^\/problems\/[^/]+(?:\/|$)/.test(location.pathname)) return;
+    if (!settings.enabled) {
+      view.clear();
+      return;
+    }
+    if (!["C++", "Java", "Python", "Python3"].includes(language) || !/^\/problems\/[^/]+(?:\/|$)/.test(location.pathname)) return;
     function format(source) {
-      const input = core.parseInput(source);
-      return input ? core.formatCpp(input, core.parametersFor(code, input)) : null;
+      if ((language === "Python" || language === "Python3") && !settings.colorMode) return null;
+      return core.format(language, source, code);
     }
     for (const record of view.records) {
       // Body edits that keep the same signature must not reset the input view.
@@ -31,7 +35,7 @@
     }
     for (const node of adapter.inputNodes()) {
       const formatted = format(node.textContent);
-      if (formatted !== null) view.mount(node, formatted);
+      if (formatted !== null) view.mount(node, formatted, language);
     }
   }
   function schedule() {
@@ -57,7 +61,8 @@
   }, 750);
   addEventListener("popstate", schedule);
   settings.subscribe(schedule);
-  settings.ready.catch(() => { /* Keep the default uncolored view if storage is unavailable. */ });
+  settings.subscribeEnabled(schedule);
+  settings.ready.then(schedule).catch(schedule);
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type === "LEETCASE_PING") sendResponse({
       type: "LEETCASE_PONG",
@@ -66,5 +71,4 @@
       isProblemPage: /^\/problems\/[^/]+(?:\/|$)/.test(location.pathname),
     });
   });
-  reconcile();
 })();

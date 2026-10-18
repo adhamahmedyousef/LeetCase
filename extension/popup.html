@@ -14,11 +14,18 @@
     <main>
       <header class="brand-row">
         <a class="brand" href="https://voidhub.co" target="_blank" rel="noopener noreferrer">By VoidHub</a>
-        <span class="version">0.4.1</span>
+        <span class="version">0.5.0</span>
       </header>
       <div class="identity">
         <h1>LeetCase<span class="brand-bar" aria-hidden="true"></span></h1>
         <img class="brand-icon" src="icons/leetcase.png" width="48" height="48" alt="" aria-hidden="true">
+      </div>
+      <div class="master-banner">
+        <label class="setting" for="extension-enabled">
+          <span class="setting-copy"><span class="master-copy"><strong>Input formatting</strong><span class="state" id="enabled-state">On</span></span></span>
+          <input id="extension-enabled" type="checkbox" role="switch" aria-label="Input formatting" aria-describedby="enabled-state" disabled>
+          <span class="switch" aria-hidden="true"></span>
+        </label>
       </div>
       <pre class="code-preview" id="code-preview" aria-label="C++ formatting preview"></pre>
       <label class="setting" for="color-mode">
@@ -32,7 +39,7 @@
         <div class="footer-links">
           <details>
             <summary>About</summary>
-            <p>LeetCase formats and copies testcase inputs inside LeetCode. Currently supports C++.</p>
+            <p>LeetCase formats and copies testcase inputs inside LeetCode. Supports C++ and Java, with colors only for Python examples.</p>
             <p>Open source under MIT. <a href="https://github.com/adhamahmedyousef/LeetCase/pulls" target="_blank" rel="noopener noreferrer">Pull requests</a> are welcome and reviewed by the maintainer.</p>
             <p>Independent of LeetCode. Not affiliated with or endorsed by it.</p>
           </details>

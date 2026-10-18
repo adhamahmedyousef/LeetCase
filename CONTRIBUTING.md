@@ -13,3 +13,8 @@ Contributions are licensed under the project's MIT License.
 For input-formatting changes, run `node --test` and verify the
 loaded extension on LeetCode. See [the architecture](docs/architecture.md) for
 the boundaries between parsing, site integration and presentation.
+
+For formatter changes, also run `node tests/cpp-roundtrip.cjs` (g++) and
+`node tests/java-roundtrip.cjs` (JDK). Browser regression pages live under `tests/`.
+`python scripts/package_release.py` builds and checks a local release ZIP in
+ignored `dist/`; it does not upload or publish anything.

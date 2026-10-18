@@ -19,12 +19,12 @@
     records.delete(record);
   }
   function clear() { for (const record of records) restore(record); }
-  function mount(node, formatted) {
+  function mount(node, formatted, language = "C++") {
     const paragraphLayout = node.nodeType === Node.ELEMENT_NODE;
     // The font shorthand can serialize to an empty string when the site's
     // advanced font settings cannot be represented by that shorthand.
     const originalTypography = paragraphLayout ? getComputedStyle(node) : null;
-    const fontProperties = ["font-family", "font-size", "font-weight", "font-style", "font-stretch", "font-variant", "font-feature-settings", "font-variation-settings", "line-height", "letter-spacing", "word-spacing"];
+    const fontProperties = ["font-family", "font-size", "font-weight", "font-style", "font-stretch", "font-variant", "font-feature-settings", "font-variation-settings", "line-height", "letter-spacing", "word-spacing", "white-space"];
     const typography = originalTypography ? fontProperties.map(property => [property, originalTypography.getPropertyValue(property)]) : [];
     const original = document.createElement("span");
     original.dataset.leetcaseOriginal = "";
@@ -61,6 +61,27 @@
       clearTimeout(feedbackTimer);
       feedbackTimer = setTimeout(() => { feedback.textContent = ""; }, 1500);
     }
+    function retain() {
+      const record = {
+        original, host, source: node.textContent, formatted,
+        dispose() { disposed = true; clearTimeout(feedbackTimer); },
+      };
+      records.add(record);
+      return record;
+    }
+    if (language === "Python" || language === "Python3") {
+      host.dataset.leetcaseColorOnly = "true";
+      // No declarations, copy controls, added whitespace or syntax conversion.
+      for (const token of globalThis.LeetCase.highlight.tokenize(formatted)) {
+        const span = document.createElement("span");
+        span.className = `leetcase-token-${token.kind}`;
+        span.textContent = token.text;
+        code.append(span);
+      }
+      host.append(code);
+      original.after(host);
+      return retain();
+    }
     formatted.split("\n").forEach((declaration, index) => {
       if (index) code.append(document.createTextNode("\n"));
       const value = document.createElement("span");
@@ -96,7 +117,7 @@
       code.hidden = showOriginal;
       feedback.textContent = "";
       toggle.setAttribute("aria-pressed", String(showOriginal));
-      toggle.title = showOriginal ? "Show C++ format" : "Show original input";
+      toggle.title = showOriginal ? `Show ${language} format` : "Show original input";
       if (showOriginal) original.before(host);
       else original.after(host);
       newline.textContent = showOriginal ? "" : "\n";
@@ -107,12 +128,7 @@
     // It does not require changing styles on any LeetCode-owned ancestor.
     host.append(toggle, prefix, code, feedback, newline);
     original.after(host);
-    const record = {
-      original, host, source: node.textContent, formatted,
-      dispose() { disposed = true; clearTimeout(feedbackTimer); },
-    };
-    records.add(record);
-    return record;
+    return retain();
   }
   globalThis.LeetCase.view = Object.freeze({ mount, restore, clear, records, setAppearance });
 })();
