@@ -28,7 +28,7 @@ There is no Connected row or Saved confirmation when toggling settings.
 Python now supports copyable assignments and Unique names. JavaScript and
 TreeNode/ListNode builders remain future work.
 
-## Current behavior (local source version 0.5.1)
+## Current behavior (source version 0.5.1)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -86,7 +86,7 @@ TreeNode/ListNode builders remain future work.
   clipboard contents were not independently confirmed in this run.
 - Live LeetCode verification after extension Reload remains pending.
   Push is explicitly authorized as `Python & Java nums`. Latest published
-  release remains v0.5.0; no new GitHub Release requested in this stage.
+  release is now v0.5.1, published on the user's subsequent request.
 
 ## Supported C++ types
 
@@ -457,5 +457,24 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
   tests, release packaging, MIT, contributing guide and project docs are retained.
   ZIPs, previews and screenshots remain ignored in dist and are not pushed.
 - README, manifest and popup About now describe Python copying correctly.
-- No new release is created here. Users installing from source must Reload the
-  unpacked extension and Refresh LeetCode. Actual live-site reload test pending.
+- Release v0.5.1 was subsequently requested and published (see below). Users
+  must Reload the unpacked extension and Refresh LeetCode. Live-site test pending.
+
+
+## Published 0.5.1 (2026-10-19)
+
+- User explicitly requested a new release and an English announcement draft.
+- Regular latest release: https://github.com/adhamahmedyousef/LeetCase/releases/tag/v0.5.1
+- Tag and source commit: `4afe968d7b04c3e947e6df48b51ea7e30574c699`
+  (`Python & Java nums`). No runtime changes after the tested source commit.
+- ZIP: `leetcase-0.5.1.zip`, 147612 bytes, 14 entries including MIT LICENSE.
+  SHA-256: `c535e36aea310cf5f927fdb1f8737af87b88ff23a1cb3fe9dcd01638831eefd2`.
+- Verified GitHub published/non-draft state, uploaded asset size/digest, remote
+  tag SHA, and independently downloaded versioned public ZIP. Archive integrity,
+  manifest version and exact SHA-256 match the tested package.
+- Release notes include manual install/update steps, local verification counts,
+  supported-type scope and pending live-site Reload verification.
+- Announcement draft: ignored `dist/leetcase-0.5.1-post.md`; thanks Aashita
+  Narayanpur via her supplied profile link for requesting Java. Notification
+  behavior of @ mentions is unconfirmed. New video URL is a visible placeholder.
+- No social post sent or published; user will record/upload the new video.
