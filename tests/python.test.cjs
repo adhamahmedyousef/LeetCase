@@ -5,22 +5,20 @@ require('../extension/highlight.js');
 const {format} = globalThis.LeetCase.core;
 const {tokenize} = globalThis.LeetCase.highlight;
 
-test('Python coloring preserves original examples byte for byte without needing a signature', () => {
-  const examples = [
-    ' nums = [2,7,11,15], target = 9\n',
-    'matrix = [[1,2],[],[3]], nums2 = []',
-    's = "a\\\"b\\\\c\\n", words = ["[a,b]", "😀", "عربي"]',
-    'root = [1,null,2], enabled = true, disabled = false',
-    'x = None, flags = [True,False], text = \'quoted\'',
-    'n = 9007199254740993, ratio = -1.5e-20',
-    'operations = ["TreeNode","add"], values = [[],[1]]',
-    'a = 1\n  b = [2,3]\r\n',
-  ];
-  for (const language of ['Python', 'Python3']) for (const source of examples) {
-    assert.equal(format(language, source, ''), source);
-    assert.equal(tokenize(source).map(token => token.text).join(''), source);
+test('Python assignments are copyable and preserve values, without a signature', () => {
+  for (const language of ['Python', 'Python3']) {
+    assert.equal(format(language, ' nums = [2,7,11,15], target = 9\n', ''), 'nums = [2,7,11,15]\ntarget = 9');
+    assert.equal(format(language, 'root = [1,null,2], enabled = true, disabled = false', ''), 'root = [1,None,2]\nenabled = True\ndisabled = False');
+    assert.equal(format(language, 'n = 90071992547409931234567890, ratio = -1.12345678901234567890e-20', ''), 'n = 90071992547409931234567890\nratio = -1.12345678901234567890e-20');
+    assert.equal(format(language, 'matrix = [[1,2],[],[3]], nums2 = []', ''), 'matrix = [[1,2],[],[3]]\nnums2 = []');
+    assert.equal(format(language, 's = "nums, true null", nums = []', '', new Map([['s','s1'],['nums','nums1']])), 's1 = "nums, true null"\nnums1 = []');
   }
-  for (const source of ['', '   ', null, 'x'.repeat(200001)]) assert.equal(format('Python3', source, ''), null);
+  for (const source of ['', '   ', null, 'x'.repeat(200001), 'x = call()', 'class = 1', 'x = [1,]', 'x = 1, x = 2']) assert.equal(format('Python3', source, ''), null);
+});
+
+test('Python strings decode JSON-only slash escapes and surrogate pairs', () => {
+  const source = String.raw`s = "a\/b\n\uD83D\uDE00", words = ["true", "null", "nums1", "a\\b", "a\"b"]`;
+  assert.equal(format('Python3', source, ''), 's = "a/b\\n😀"\nwords = ["true", "null", "nums1", "a\\\\b", "a\\\"b"]');
 });
 
 test('Python syntax keywords receive colors, quoted keywords remain strings', () => {

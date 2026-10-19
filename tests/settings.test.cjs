@@ -55,6 +55,7 @@ test('a change during initial loading wins over the older storage snapshot', asy
   await env.chrome.storage.local.set({ leetcaseColorMode: true });
   reads.get('leetcaseColorMode')({ leetcaseColorMode: false });
   reads.get('leetcaseEnabled')({ leetcaseEnabled: true });
+  reads.get('leetcaseUniqueNames')({ leetcaseUniqueNames: false });
   await settings.ready;
   assert.equal(settings.colorMode, true);
 });
@@ -73,4 +74,27 @@ test('Input formatting persists, notifies tabs and leaves Color Mode intact', as
   assert.deepEqual(received, [false]);
   await reopened.setEnabled(true);
   assert.equal(first.enabled, true);
+});
+
+test('Unique names defaults off, persists and notifies tabs independently',async()=>{
+  const env=environment({leetcaseColorMode:true});
+  const first=env.open(),second=env.open(); await Promise.all([first.ready,second.ready]);
+  assert.equal(first.uniqueNames,false);
+  const events=[]; second.subscribeUniqueNames(value=>events.push(value));
+  await first.setUniqueNames(true);
+  const reopened=env.open(); await reopened.ready;
+  assert.equal(reopened.uniqueNames,true);
+  assert.equal(reopened.enabled,true); assert.equal(reopened.colorMode,true);
+  assert.deepEqual(events,[true]);
+  env.chrome.storage.local.set=async()=>{throw new Error('Storage failed');};
+  await assert.rejects(first.setUniqueNames(false)); assert.equal(first.uniqueNames,true);
+});
+
+test('Unique names change during initial read wins over an older snapshot',async()=>{
+  const env=environment(); const reads=new Map();
+  env.chrome.storage.local.get=key=>new Promise(resolve=>reads.set(key,resolve));
+  const settings=env.open();
+  await env.chrome.storage.local.set({leetcaseUniqueNames:true});
+  for (const [key,resolve] of reads) resolve({[key]:false});
+  await settings.ready; assert.equal(settings.uniqueNames,true);
 });

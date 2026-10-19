@@ -69,19 +69,6 @@
       records.add(record);
       return record;
     }
-    if (language === "Python" || language === "Python3") {
-      host.dataset.leetcaseColorOnly = "true";
-      // No declarations, copy controls, added whitespace or syntax conversion.
-      for (const token of globalThis.LeetCase.highlight.tokenize(formatted)) {
-        const span = document.createElement("span");
-        span.className = `leetcase-token-${token.kind}`;
-        span.textContent = token.text;
-        code.append(span);
-      }
-      host.append(code);
-      original.after(host);
-      return retain();
-    }
     formatted.split("\n").forEach((declaration, index) => {
       if (index) code.append(document.createTextNode("\n"));
       const value = document.createElement("span");

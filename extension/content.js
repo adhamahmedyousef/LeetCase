@@ -25,17 +25,23 @@
       return;
     }
     if (!["C++", "Java", "Python", "Python3"].includes(language) || !/^\/problems\/[^/]+(?:\/|$)/.test(location.pathname)) return;
-    function format(source) {
-      if ((language === "Python" || language === "Python3") && !settings.colorMode) return null;
-      return core.format(language, source, code);
-    }
+    // Merge mounted and untouched inputs in document order. Mutation order and
+    // the Set's insertion order must not change example numbering.
+    const nodes = [...view.records].map(record => record.original.firstChild).concat(adapter.inputNodes())
+      .filter(node => node?.isConnected)
+      .sort((a, b) => a === b ? 0 : a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+    const sourcesInOrder = nodes.map(node => node.textContent);
+    const names = settings.uniqueNames ? core.exampleNames(sourcesInOrder) : [];
+    const formattedByNode = new Map(nodes.map((node, index) => [node,
+      core.format(language, node.textContent, code, names[index]),
+    ]));
     for (const record of view.records) {
       // Body edits that keep the same signature must not reset the input view.
-      if (format(record.source) !== record.formatted) view.restore(record);
+      if (formattedByNode.get(record.original.firstChild) !== record.formatted) view.restore(record);
     }
     for (const node of adapter.inputNodes()) {
-      const formatted = format(node.textContent);
-      if (formatted !== null) view.mount(node, formatted, language);
+      const formatted = formattedByNode.get(node);
+      if (typeof formatted === "string") view.mount(node, formatted, language);
     }
   }
   function schedule() {
@@ -62,6 +68,7 @@
   addEventListener("popstate", schedule);
   settings.subscribe(schedule);
   settings.subscribeEnabled(schedule);
+  settings.subscribeUniqueNames(schedule);
   settings.ready.then(schedule).catch(schedule);
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type === "LEETCASE_PING") sendResponse({

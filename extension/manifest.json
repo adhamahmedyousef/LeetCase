@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeetCase",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "icons": {
     "16": "icons/leetcase.png",
     "32": "icons/leetcase.png",
@@ -9,7 +9,7 @@
     "128": "icons/leetcase.png"
   },
   "permissions": ["storage"],
-  "description": "C++ and Java testcase formatting and copying. Python input syntax colors. By VoidHub. Independent of LeetCode.",
+  "description": "C++, Java and Python testcase formatting and copying. Optional syntax colors. By VoidHub. Independent of LeetCode.",
   "action": {
     "default_title": "LeetCase",
     "default_icon": "icons/leetcase.png",

@@ -171,15 +171,66 @@
     }
     return lines.join("\n");
   }
-  function format(language, source, code) {
-    // Python is presentation-only: preserve LeetCode's exact text, including
-    // true/false/null spellings. Never claim these examples are executable Python.
-    if (language === "Python" || language === "Python3") return typeof source === "string" && source.length <= 200000 && source.trim() ? source : null;
+  function exampleNames(sources) {
+    const inputs = sources.map(parseInput);
+    const reserved = new Set(inputs.flatMap(items => items?.map(item => item.name) ?? []));
+    const used = new Set();
+    return inputs.map((items, index) => new Map((items ?? []).map(({ name }) => {
+      let suffix = index;
+      let candidate = index ? name + suffix : name;
+      // Preserve real names such as nums1, and avoid collisions across examples.
+      while (used.has(candidate) || (candidate !== name && reserved.has(candidate))) candidate = name + ++suffix;
+      used.add(candidate);
+      return [name, candidate];
+    })));
+  }
+  function formatPython(source, names) {
     const inputs = parseInput(source);
     if (!inputs) return null;
-    if (language === "C++") return formatCpp(inputs, parametersFor(code, inputs));
-    if (language === "Java") return globalThis.LeetCase.java.format(inputs, globalThis.LeetCase.java.parametersFor(code, inputs));
-    return null;
+    const keywords = new Set("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield __debug__".split(" "));
+    // Keep numeric lexemes intact (including arbitrary precision integers), and
+    // split assignments only outside quoted strings and nested arrays.
+    const parts = [];
+    let start = 0, depth = 0, quoted = false, escaped = false;
+    for (let i = 0; i < source.length; i++) {
+      const char = source[i];
+      if (quoted) {
+        if (escaped) escaped = false;
+        else if (char === "\\") escaped = true;
+        else if (char === '\"') quoted = false;
+      } else if (char === '\"') quoted = true;
+      else if (char === "[") depth++;
+      else if (char === "]") depth--;
+      else if (char === "," && depth === 0) { parts.push(source.slice(start, i)); start = i + 1; }
+    }
+    parts.push(source.slice(start));
+    const used = new Set();
+    const lines = inputs.map((input, index) => {
+      const name = names?.get(input.name) ?? input.name;
+      if (!/^[A-Za-z_]\w*$/.test(name) || keywords.has(name) || used.has(name)) return null;
+      used.add(name);
+      const raw = parts[index].slice(parts[index].indexOf("=") + 1).trim();
+      // JSON strings need decoding/requoting: \/ and UTF-16 surrogate pairs
+      // do not have the same source-level meaning in Python.
+      const value = raw.replace(/"(?:\\[\s\S]|[^"\\])*"|\b(?:true|false|null)\b/g, token =>
+        token[0] === '"' ? JSON.stringify(JSON.parse(token)) : ({ true: "True", false: "False", null: "None" })[token]);
+      return `${name} = ${value}`;
+    });
+    return lines.includes(null) ? null : lines.join("\n");
   }
-  globalThis.LeetCase = { core: Object.freeze({ parseInput, parametersFor, formatCpp, signatureText, format }) };
+  function format(language, source, code, names) {
+    if (language === "Python" || language === "Python3") return formatPython(source, names);
+    const inputs = parseInput(source);
+    if (!inputs) return null;
+    const formatter = language === "C++" ? { parametersFor, format: formatCpp } : language === "Java" ? globalThis.LeetCase.java : null;
+    if (!formatter) return null;
+    const parameters = formatter.parametersFor(code, inputs);
+    if (!parameters) return null;
+    // Bind with original signature names first; rename identifiers structurally,
+    // never replace text in string literals or values.
+    const renamed = inputs.map(input => ({ ...input, name: names?.get(input.name) ?? input.name }));
+    if (renamed.some(input => !/^[A-Za-z_]\w*$/.test(input.name)) || new Set(renamed.map(input => input.name)).size !== renamed.length) return null;
+    return formatter.format(renamed, parameters.map((parameter, i) => ({ ...parameter, name: renamed[i].name })));
+  }
+  globalThis.LeetCase = { core: Object.freeze({ parseInput, parametersFor, formatCpp, signatureText, format, exampleNames }) };
 })();

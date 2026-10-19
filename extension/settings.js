@@ -2,6 +2,15 @@
   "use strict";
   const colorModeKey = "leetcaseColorMode";
   const enabledKey = "leetcaseEnabled";
+  const uniqueNamesKey = "leetcaseUniqueNames";
+  const uniqueNamesListeners = new Set();
+  let uniqueNames = false;
+  let uniqueNamesRevision = 0;
+  function updateUniqueNames(value) {
+    if (uniqueNames === value) return;
+    uniqueNames = value;
+    for (const listener of uniqueNamesListeners) listener(value);
+  }
   const colorModeListeners = new Set();
   const enabledListeners = new Set();
   let colorMode = false;
@@ -28,20 +37,33 @@
       enabledRevision++;
       updateEnabled(changes[enabledKey].newValue !== false);
     }
+    if (changes[uniqueNamesKey]) {
+      uniqueNamesRevision++;
+      updateUniqueNames(changes[uniqueNamesKey].newValue === true);
+    }
   });
   const initialColorModeRevision = colorModeRevision;
   const initialEnabledRevision = enabledRevision;
+  const initialUniqueNamesRevision = uniqueNamesRevision;
   const ready = Promise.all([
     chrome.storage.local.get(colorModeKey),
     chrome.storage.local.get(enabledKey),
-  ]).then(([colorValues, enabledValues]) => {
+    chrome.storage.local.get(uniqueNamesKey),
+  ]).then(([colorValues, enabledValues, uniqueValues]) => {
     if (colorModeRevision === initialColorModeRevision) updateColorMode(colorValues[colorModeKey] === true);
     if (enabledRevision === initialEnabledRevision) updateEnabled(enabledValues[enabledKey] !== false);
+    if (uniqueNamesRevision === initialUniqueNamesRevision) updateUniqueNames(uniqueValues[uniqueNamesKey] === true);
   });
   globalThis.LeetCase.settings = Object.freeze({
     ready,
     get colorMode() { return colorMode; },
     get enabled() { return enabled; },
+    get uniqueNames() { return uniqueNames; },
+    async setUniqueNames(value) {
+      await chrome.storage.local.set({ [uniqueNamesKey]: value === true });
+      uniqueNamesRevision++;
+      updateUniqueNames(value === true);
+    },
     async setColorMode(enabled) {
       await chrome.storage.local.set({ [colorModeKey]: enabled === true });
       colorModeRevision++;
@@ -54,5 +76,6 @@
     },
     subscribe(listener) { colorModeListeners.add(listener); return () => colorModeListeners.delete(listener); },
     subscribeEnabled(listener) { enabledListeners.add(listener); return () => enabledListeners.delete(listener); },
+    subscribeUniqueNames(listener) { uniqueNamesListeners.add(listener); return () => uniqueNamesListeners.delete(listener); },
   });
 })();

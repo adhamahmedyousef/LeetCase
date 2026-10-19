@@ -109,13 +109,14 @@ world. `LeetCase` is an internal namespace; no dependencies or page-world bridge
 
 ## Verification
 
-Python/Python3 uses a color-only path when both Input formatting and Color Mode
-are enabled. Core returns the exact source text without parsing/reformatting or
-reading a signature; the view tokenizes it in one span, preserves whitespace and
-typography, and adds no declarations, buttons or copy behavior. Turning either
-setting off restores the original input node. JSON-style true/false/null spellings
-remain unchanged: this is not an executable-Python converter. JavaScript stays
-unsupported. Color-only inputs retain the 200,000-code-unit limit.
+Python/Python3 uses parsed, copyable assignments without reading a typed method
+signature. It preserves numeric source lexemes, decodes/requotes JSON strings,
+and converts boolean/null literals outside strings to True/False/None.
+Unsupported or malformed assignments fail closed. Serialized node inputs remain
+plain lists; this does not construct TreeNode/ListNode objects. Shared Input view
+provides per-assignment double-click/keyboard copy, Original and optional colors.
+Unique names uses the same example maps as C++/Java; Color Mode never gates copy.
+The input size/depth limits still apply. JavaScript remains unsupported.
 
 Run `node --test`. Use `tests/fixture.html` through a local
 HTTP server for DOM checks. The fixture reuses the live observed example markup
@@ -131,10 +132,10 @@ It requires g++ on PATH and creates/removes its own verified temporary directory
 independent checks for UTF-16 units, numeric bounds/IEEE bits, array shape and
 mutable typed lists, without imports. Requires a JDK on PATH.
 `/tests/controller-regressions.html` exercises C++/Java/unsupported language
-switches, code edits, SPA navigation, rerenders, Original and both preferences.
+switches, code edits, SPA navigation, rerenders, Original and all three preferences.
 
 Next adapters/formatters must preserve these boundaries. TreeNode/ListNode
-builders, executable Python declarations and JavaScript remain separate future work. The root
+builders and JavaScript remain separate future work. The root
 `LeetCase.md` holds the user requirements, current verification and backlog.
 
 Browser layout regressions: `/tests/dom-regressions.html` covers both observed
@@ -143,3 +144,20 @@ layouts, two arrays and exact original/Output/Explanation restoration.
 Popup 0.4.0 intentionally removes connection status and active-tab queries.
 C++ and Java scope is explained in About. Color Mode uses the same shared settings module
 and drives a static illustrative preview, never the user's editor content.
+`node tests/python-roundtrip.cjs` executes generated Python assignments and
+compares values/names against independent Python json.loads results.
+
+
+### Optional example names (0.5.1)
+
+`settings.js` stores `leetcaseUniqueNames` independently, defaulting to false.
+The controller orders Input nodes in DOM order and asks `core.exampleNames`
+for collision-safe name maps. For C++/Java, `core.format` binds the real signature
+first; Python uses parsed input names. Both paths apply maps structurally. It never replaces strings inside values.
+Rendered declarations and copy payloads share one result for C++, Java and
+Python. Reconciliation handles settings, rerenders and removed examples.
+
+The popup uses solid A with a VoidHub dark palette. All three preferences save
+without success messages; failures remain visible through the status region.
+Abandoned design options were removed; only the actual popup preview harness
+is retained.

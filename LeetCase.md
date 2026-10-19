@@ -1,6 +1,6 @@
 # LeetCase
 
-Project handoff and decision record. Updated 2026-10-18, Africa/Cairo.
+Project handoff and decision record. Updated 2026-10-19, Africa/Cairo.
 Read this file before continuing work; update it when behavior or status changes.
 
 ## Identity and scope
@@ -23,12 +23,12 @@ the user's next stage. Do not build the entire roadmap in one pass.
 GitHub push was explicitly authorized in this conversation; do not create another
 repository, publish a store listing or deploy unrelated services without a request.
 
-The popup uses the approved Code first direction without a Connected row. The
-user selected the compact D status strip for the new Input formatting switch.
-Python currently colors original Input text only. Executable Python declarations
-and JavaScript support remain future work.
+The latest popup uses approved solid layout A, darkened to match VoidHub.
+There is no Connected row or Saved confirmation when toggling settings.
+Python now supports copyable assignments and Unique names. JavaScript and
+TreeNode/ListNode builders remain future work.
 
-## Current behavior (source version 0.5.0)
+## Current behavior (local source version 0.5.1)
 
 - Chrome Manifest V3, no dependencies or build step, no background worker.
 - A content script operates on `https://leetcode.com/problems/*` and the www alias.
@@ -44,8 +44,8 @@ and JavaScript support remain future work.
   complete declaration; Enter/Space also copy when the declaration has focus.
 - Successful clipboard writes show **Copied**. Copy errors show retry feedback.
   The copied text contains only the declaration, without credits or page footer.
-- Popup uses the approved dark Code first design: By VoidHub link, LeetCase title,
-  the user's supplied LS logo, Input formatting and Color Mode switches, About,
+- Popup uses approved solid A with a VoidHub dark palette: By VoidHub link, LeetCase title,
+  the user's supplied LS logo, Input formatting, Color Mode and Unique names switches, About,
   GitHub and copyright. The user explicitly removed the entire Connected row.
 - Input formatting defaults on for existing installs. Turning it off restores
   the original LeetCode inputs in open tabs and prevents further formatting;
@@ -53,14 +53,40 @@ and JavaScript support remain future work.
   `chrome.storage.local` under `leetcaseEnabled` and follows the user across tabs.
 - **Color Mode** defaults off, updates open tabs and persists across browser
   restarts through `chrome.storage.local`, key `leetcaseColorMode`.
-- Python/Python3 receives colors only when both Input formatting and Color Mode
-  are enabled. Exact original text/whitespace is preserved, without declarations,
-  Original/copy buttons or executable-Python conversion. Turning either switch
-  off restores the exact original input node. JavaScript remains unsupported.
+- Python/Python3 supports per-assignment copy and Unique names, even with Color
+  Mode off. JSON boolean/null literals become True/False/None outside strings.
+  Numeric source lexemes are preserved; JSON-only slash escapes and UTF-16 pairs
+  are decoded/requoted correctly. Serialized node arrays remain ordinary lists,
+  not constructed TreeNode/ListNode instances. Original restores exact source.
 - Colors use visible Monaco token colors when available; missing categories
   use a VS-style light/dark palette. Custom themes may use fallback colors.
 - Only declared API permission: `storage`. No analytics, external requests,
   account data, browsing-history permission or saved solution/testcase content.
+
+## Local 0.5.1: Unique names and popup A (2026-10-19)
+
+- User selected A, then requested VoidHub dark colors and no Saved confirmations.
+  Applied compact spacing, #10151e background, teal switches and the LS logo.
+  All preferences save silently; load/save errors remain visible.
+- Optional **Unique names** defaults off, persisted independently under
+  `leetcaseUniqueNames`. First example keeps its names; later examples use
+  nums1/target1, nums2/target2, etc. Display and copy share the same declarations.
+- C++ and Java bind the actual signature before structurally renaming identifiers.
+  Literal strings, types and original data stay intact. Existing numeric
+  parameter names are reserved to avoid collisions. Python uses the same maps.
+- Numbering follows DOM example order, including unsupported examples, and
+  reconciles after rerenders/removal.
+- Passed: 40 Node tests, 61 browser layout checks, 29 lifecycle checks. Native
+  round trips: Java 593 declarations / 4292 assertions; C++ 568 / 4171.
+- Popup browser preview: toggled all three switches without Saved; reloaded and
+  confirmed persistence. Screenshot: ignored `dist/popup-a-dark.png`. This
+  preview uses an isolated storage shim, not the installed extension.
+- Local Input fixture shows nums1 and target1 in example 2; double-click shows
+  Copied. Browser-session clipboard reader returned empty, so exact system
+  clipboard contents were not independently confirmed in this run.
+- Live LeetCode verification after extension Reload remains pending.
+  Push is explicitly authorized as `Python & Java nums`. Latest published
+  release remains v0.5.0; no new GitHub Release requested in this stage.
 
 ## Supported C++ types
 
@@ -135,15 +161,15 @@ shim is test-only and is not part of the shipped extension.
 
 ## Known limits and remaining work
 
-1. User should reload the unpacked extension and refresh LeetCode to see the
-   0.4.1 logo. Continue in small stages and preserve the agreed in-page behavior.
-2. Verify 0.3.0 on several real LeetCode problems after extension Reload + page Refresh.
+1. Reload the unpacked extension and refresh LeetCode to verify 0.5.1 live.
+   Continue in small stages and preserve the agreed in-page behavior.
+2. Verify 0.5.1 on several real LeetCode problems after extension Reload + page Refresh.
    The adapter supports legacy `pre` examples and modern `.example-block` paragraphs
    containing a plain `span.example-io`. Add other layouts only after observing them.
 3. **TreeNode and ListNode remain unsupported.** Design explicit builders with
    LeetCode's serialization rules; never reinterpret their input arrays as vectors.
-4. Python executable declarations (beyond colors) and JavaScript support remain
-   future work; Python colors-only now ships in 0.5.0.
+4. JavaScript and TreeNode/ListNode builders remain future work. Python
+   copyable assignments are implemented in 0.5.1.
 5. Bounded C++ signature reader is not a full parser. If the declaration is outside
    Monaco's rendered viewport, missing, overloaded/ambiguous or unsupported,
    preserve original input. Full model integration needs a separate design decision.
@@ -411,3 +437,25 @@ card, then **Refresh** on the problem page. Browser automation cannot claim
 - Verified before publication: 19 Node tests; native C++ compilation of 168
   generated declarations and 404 independent value assertions; ZIP root and
   manifest version 0.4.1.
+
+
+## 0.5.1 Python copy and repository cleanup (2026-10-19)
+
+- Requested commit: `Python & Java nums`, including the approved solid dark A
+  popup and persisted Unique names for C++, Java and Python.
+- Python now shares double-click / Enter / Space copy and Original toggle.
+  Supported LeetCode JSON-style inputs become Python assignments; strings keep
+  contents, booleans/null use Python spelling, large integer/decimal lexemes
+  retain their exact source digits. No need for an editor method signature.
+- Native verification: 816 Python programs / 2448 value/name assertions;
+  Java 593 declarations / 4292 assertions; C++ 568 / 4171. Node suite: 41 tests.
+- Browser verification passed: 61 layout checks and 34 lifecycle checks.
+- Browser fixtures cover both layouts, Python colors off/on, Original restoration,
+  numbering multiple variables and copying the numbered assignment. Clipboard
+  payload is verified with a test-only clipboard writer, not a live OS read.
+- Removed abandoned four-option popup generator. Runtime, meaningful regression
+  tests, release packaging, MIT, contributing guide and project docs are retained.
+  ZIPs, previews and screenshots remain ignored in dist and are not pushed.
+- README, manifest and popup About now describe Python copying correctly.
+- No new release is created here. Users installing from source must Reload the
+  unpacked extension and Refresh LeetCode. Actual live-site reload test pending.

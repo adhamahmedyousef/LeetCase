@@ -14,11 +14,11 @@
     <main>
       <header class="brand-row">
         <a class="brand" href="https://voidhub.co" target="_blank" rel="noopener noreferrer">By VoidHub</a>
-        <span class="version">0.5.0</span>
+        <span class="version">0.5.1</span>
       </header>
       <div class="identity">
-        <h1>LeetCase<span class="brand-bar" aria-hidden="true"></span></h1>
-        <img class="brand-icon" src="icons/leetcase.png" width="48" height="48" alt="" aria-hidden="true">
+        <h1>LeetCase</h1>
+        <img class="brand-icon" src="icons/leetcase.png" width="34" height="34" alt="" aria-hidden="true">
       </div>
       <div class="master-banner">
         <label class="setting" for="extension-enabled">
@@ -33,13 +33,18 @@
         <input id="color-mode" type="checkbox" role="switch" aria-labelledby="color-mode-label" aria-describedby="color-mode-help" disabled>
         <span class="switch" aria-hidden="true"></span>
       </label>
+      <label class="setting" for="unique-names">
+        <span class="setting-copy"><strong id="unique-names-label">Unique names</strong><small id="unique-names-help">nums, nums1, nums2 across examples</small></span>
+        <input id="unique-names" type="checkbox" role="switch" aria-labelledby="unique-names-label" aria-describedby="unique-names-help" disabled>
+        <span class="switch" aria-hidden="true"></span>
+      </label>
       <p id="setting-status" role="status" aria-live="polite"></p>
       <p class="hint">Double-click a declaration to copy.</p>
       <footer>
         <div class="footer-links">
           <details>
             <summary>About</summary>
-            <p>LeetCase formats and copies testcase inputs inside LeetCode. Supports C++ and Java, with colors only for Python examples.</p>
+            <p>LeetCase formats and copies testcase inputs inside LeetCode. Supports C++, Java and Python, with optional syntax colors and unique variable names.</p>
             <p>Open source under MIT. <a href="https://github.com/adhamahmedyousef/LeetCase/pulls" target="_blank" rel="noopener noreferrer">Pull requests</a> are welcome and reviewed by the maintainer.</p>
             <p>Independent of LeetCode. Not affiliated with or endorsed by it.</p>
           </details>

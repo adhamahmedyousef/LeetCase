@@ -87,11 +87,11 @@
       view.setAppearance(true,{keyword:'#569cd6',string:'#ce9178',number:'#b5cea8',variable:'#9cdcfe'});
       mount('',language);
       const host = cases.querySelector('[data-leetcase-view]');
-      check(host.textContent === source, `${language} preserves exact input text in ${modern?'paragraph':'legacy'} layout`);
-      check(!host.querySelector('button,[role="button"],.leetcase-declaration'), `${language} adds no conversion/copy controls`);
+      check(host.querySelector('.leetcase-code').textContent === 'root = [1,None,2]\ns = \"a\\n\"\nflag = True', `${language} formats Python assignments in ${modern?'paragraph':'legacy'} layout`);
+      check(host.querySelectorAll('[role="button"]').length === 3 && !!host.querySelector('.leetcase-original-toggle'), `${language} adds per-assignment copy and Original controls`);
       check(getComputedStyle(host).fontFamily === font && [...host.querySelectorAll('.leetcase-code > span')].every(span=>getComputedStyle(span).fontFamily===font), `${language} retains original typography`);
       check(host.dataset.leetcaseColorMode === 'true' && !!host.querySelector('.leetcase-token-string'), `${language} colors original tokens`);
-      check(getComputedStyle(host.querySelector('.leetcase-code')).whiteSpace===whitespace, `${language} retains original whitespace layout`);
+      check(getComputedStyle(host.querySelector('.leetcase-code')).whiteSpace==='pre-wrap', `${language} declarations wrap without changing original data`);
       view.clear();
       check(adapter.inputNodes()[0]===node, `${language} cleanup restores exact original node`);
     }

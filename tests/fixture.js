@@ -23,6 +23,9 @@ addEventListener('DOMContentLoaded', async () => {
   await settings.ready;
   colorMode.checked = settings.colorMode;
   colorMode.onchange = () => settings.setColorMode(colorMode.checked);
+  const uniqueNames=document.getElementById('unique-names');
+  uniqueNames.checked=settings.uniqueNames;
+  uniqueNames.onchange=()=>settings.setUniqueNames(uniqueNames.checked);
 });
 const language = document.getElementById('language');
 

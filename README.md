@@ -3,15 +3,16 @@
 ### By [VoidHub](https://voidhub.co)
 
 An open-source Chrome extension for displaying and copying LeetCode testcases in
-your editor's language, while preserving the original test data. Supports C++
-and Java, with syntax coloring for Python examples.
+your editor's language, while preserving the original test data. Supports C++,
+Java and Python.
 
 Formats supported testcase values using the selected editor language and method
 signature. Supports C++ scalars and nested vectors, plus Java scalars, strings,
 arrays and typed lists. Use **Original** to switch views, or double-click a declaration
 to copy it. Optional **Color Mode** adds IDE-style syntax colors and remembers
-your choice. For Python/Python3, Color Mode only colors the original Input text;
-it does not rewrite values or generate Python code. Turn the extension's input
+your choice. Optional **Unique names** numbers variables across examples: `nums`,
+`nums1`, `nums2`. Python/Python3 copies assignments with Python literals
+(`True`, `False`, `None`), keeping arrays as lists. Turn the extension's input
 presentation on or off from the popup. JavaScript is planned. Independent of
 LeetCode; not affiliated with or endorsed by it.
 

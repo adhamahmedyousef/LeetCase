@@ -26,7 +26,6 @@
   word-spacing: inherit;
 }
 [data-leetcase-view][data-leetcase-layout="paragraph"] .leetcase-code { white-space: pre-wrap; }
-[data-leetcase-view][data-leetcase-color-only="true"] .leetcase-code { white-space: inherit; }
 [data-leetcase-view] .leetcase-original-toggle {
   appearance: none;
   float: right;
