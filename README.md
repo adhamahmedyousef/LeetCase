@@ -33,3 +33,7 @@ The maintainer reviews contributions and chooses what to merge.
 © 2026 VoidHub. Released under the [MIT License](LICENSE).
 
 [Project status and next steps](LeetCase.md)
+
+## Privacy
+
+[Privacy policy](PRIVACY.md). Formatting runs locally; only preferences are persisted.
